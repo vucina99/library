@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\UserResource;
 use App\Models\Role;
@@ -44,7 +45,15 @@ class LibrarianController extends Controller
 
     public function createUser(CreateUserRequest $request){
             $user = $this->user->createUser($request);
-            return response(new UserResource($user->original), 200);
+            return response(new UserResource($user), 201);
     }
 
+    public function editUser(UpdateUserRequest $request, $id){
+        $user = User::find($id);
+        if(!$user){
+            return response('User not found' , 404);
+        }
+        $user = $this->user->editUser($request,$user);
+        return response(new UserResource($user), 200);
+    }
 }

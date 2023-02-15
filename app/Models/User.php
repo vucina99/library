@@ -25,7 +25,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
-
+        'created_by'
     ];
 
     /**
@@ -60,7 +60,6 @@ class User extends Authenticatable
 
     public function createUser($request)
     {
-
         $user = User::create([
             'first_name' => $request->firstName,
             'last_name' => $request->lastName,
@@ -70,6 +69,21 @@ class User extends Authenticatable
             'created_by' => Auth::user()->id
         ]);
 
-        return response($user->refresh(), 200);
+        return $user->refresh();
     }
+
+
+    public function editUser($request , $user)
+    {
+        $user->update([
+            'first_name' => $request->firstName,
+            'last_name' => $request->lastName,
+            'role_id' => $request->role,
+        ]);
+
+        return $user;
+    }
+
+
+
 }

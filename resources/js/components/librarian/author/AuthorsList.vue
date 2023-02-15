@@ -51,7 +51,6 @@
                             </thead>
                             <tbody>
                             <tr>
-
                                 <td class="text-center">Mark</td>
                                 <td class="text-center">Otto</td>
                                 <td class="text-center">@mdo</td>

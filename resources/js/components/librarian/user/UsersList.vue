@@ -3,7 +3,9 @@
         <div class="container">
             <div class="row ">
                 <div class="col-lg-4 col-md-12">
-
+                    <!--                modali za edit i prikaz usera-->
+                    <show-user></show-user>
+                    <edit-user></edit-user>
                     <div v-if="Object.keys(this.errorData).length > 0"
                          class="alert error-danger alert-danger alert-dismissible fade show"
                          role="alert">
@@ -21,15 +23,16 @@
                          class="alert error-danger alert-success alert-dismissible fade show"
                          role="alert">
                         <span><i class="fa fa-check-square" aria-hidden="true"></i> &nbsp; SUCCESS ADDED</span>
-                        <button @click.prevent="success = false" type="button" class="close"  >
+                        <button @click.prevent="success = false" type="button" class="close">
                             <span>&times;</span>
                         </button>
                     </div>
                     <div v-if="error"
                          class="alert error-danger alert-danger alert-dismissible fade show"
                          role="alert">
-                        <span> <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp; CHECK ALL FIELDS</span>
-                        <button @click.prevent="error = false" type="button" class="close"  >
+                        <span> <i class="fa fa-exclamation-triangle"
+                                  aria-hidden="true"></i> &nbsp; CHECK ALL FIELDS</span>
+                        <button @click.prevent="error = false" type="button" class="close">
                             <span>&times;</span>
                         </button>
                     </div>
@@ -66,12 +69,13 @@
                             <label for="role">ROLE</label>
                             <select name="role" id="role" v-model="user.role" class="form-control">
                                 <option value="">SELECT ROLE</option>
-                                <option v-for="(role, key) in allRoles" :key="key" :value="role.id">{{role.name}}</option>
+                                <option v-for="(role, key) in allRoles" :key="key" :value="role.id">{{ role.name }}
+                                </option>
                             </select>
                         </div>
                         <div class="pt-3">
                             <div class="w-100 d-flex justify-content-between">
-                                <button class="btn btn-dark w-100 mr-1"  @click.prevent="addUser()">
+                                <button class="btn btn-dark w-100 mr-1" @click.prevent="addUser()">
                                     ADD USER <i class="fa fa-plus" aria-hidden="true"></i>
                                 </button>
 
@@ -97,12 +101,13 @@
                             <tbody>
                             <tr v-for="(user, index) in allUsers">
 
-                                <td class="text-center">{{ user.firstName }}</td>
-                                <td class="text-center">{{ user.lastName }}</td>
-                                <td class="text-center">{{ user.email }}</td>
-                                <td class="text-center">{{ user.role?.name }}</td>
-                                <td class="text-center">
-                                    <div class="w-100 text-center"><i class="fa text-dark fa fa-pencil" aria-hidden="true"></i>
+                                <td class="text-center" @click.prevent="showUser(user)">{{ user.firstName }}</td>
+                                <td class="text-center" @click.prevent="showUser(user)">{{ user.lastName }}</td>
+                                <td class="text-center" @click.prevent="showUser(user)">{{ user.email }}</td>
+                                <td class="text-center" @click.prevent="showUser(user)">{{ user.role?.name }}</td>
+                                <td class="text-center" @click.prevent="editUserModal(user , index)">
+                                    <div class="w-100 text-center"><i class="fa text-dark fa fa-pencil"
+                                                                      aria-hidden="true"></i>
                                     </div>
                                 </td>
                             </tr>
@@ -119,8 +124,15 @@
 </template>
 
 <script>
+import EditUser from "./EditUser";
+import ShowUser from "./ShowUser";
+
 export default {
     name: "UsersList",
+    components: {
+        'edit-user': EditUser,
+        'show-user': ShowUser,
+    },
     data() {
         return {
             allUsers: [],
@@ -129,7 +141,7 @@ export default {
                 'lastName': '',
                 'email': '',
                 'password': '',
-                'role' : ''
+                'role': ''
             },
             errorData: {},
             success: false,
@@ -141,17 +153,18 @@ export default {
     methods: {
         addUser() {
             //treba validacija da se radi i na beku i na frontu, ali na ovoj aplikaciji uradicu samo na backu
-            axios.post('/librarian/create/user' , this.user).then(({data}) => {
+            axios.post('/librarian/create/user', this.user).then(({data}) => {
 
                 this.success = true
                 this.errorData = {}
                 this.error = false
                 this.allUsers.push(data);
                 this.user = {
-                    ime: '',
-                    email: '',
-                    lozinka: '',
-                    role: 1,
+                    'firstName': '',
+                    'lastName': '',
+                    'email': '',
+                    'password': '',
+                    'role': ''
                 }
             }).catch((error) => {
                 if (error.response.status == 422) {
@@ -172,17 +185,32 @@ export default {
             })
         },
 
-        getRoles(){
+        getRoles() {
             axios.get('/librarian/get/roles').then(({data}) => {
                 this.allRoles = data
 
             })
+        },
+
+        showUser(data) {
+            this.$modal.show('show-user-modal', {'user': data});
+        },
+
+        editUserModal(data, index) {
+            this.$modal.show('edit-user-modal', {'user': data, 'caseIndex': index});
         },
     },
 
     created() {
         this.getUsers();
         this.getRoles();
+
+        this.$root.$on("editedUser", (data) => {
+            if (typeof this.allUsers[data.index] !== "undefined") {
+                this.allUsers = this.allUsers.map((x, indexMap) => (data.index === indexMap) ? data.data : x)
+
+            }
+        })
     }
 }
 </script>
