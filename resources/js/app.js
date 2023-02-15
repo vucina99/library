@@ -21,6 +21,9 @@ window.Vue = require('vue').default;
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('books', require('./components/Books.vue').default);
+Vue.component('books-list', require('./components/librarian/BooksList').default);
+Vue.component('authors-list', require('./components/librarian/AuthorsList').default);
+Vue.component('users-list', require('./components/librarian/UsersList').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

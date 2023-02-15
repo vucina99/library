@@ -18,13 +18,13 @@
                     </div>
 
                     <div class="form-group search-font-size">
-                        <label >LIBRARIAN</label>
+                        <label >AUTHOR</label>
                         <v-select
-                            :options="allLibrarian"
-                            :id="'librarian'"
+                            :options="allAuthors"
+                            :id="'author'"
                             label="name"
-                            v-model="search.librarian"
-                            placeholder="LIBRARIAN">
+                            v-model="search.author"
+                            placeholder="AUTHOR">
                         </v-select>
                     </div>
 
@@ -50,17 +50,17 @@
                 <table class="table table-text-size">
                     <thead class="bg-dark text-light">
                     <tr>
-                        <th scope="col">BOOK NUMBER</th>
-                        <th scope="col">TITLE</th>
-                        <th scope="col">AUTHOR</th>
+                        <th scope="col" class="text-center">BOOK NUMBER</th>
+                        <th scope="col" class="text-center">TITLE</th>
+                        <th scope="col" class="text-center">AUTHOR</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
 
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
+                        <td class="text-center">Mark</td>
+                        <td class="text-center">Otto</td>
+                        <td class="text-center">@mdo</td>
                     </tr>
 
                     </tbody>
@@ -84,9 +84,9 @@ export default {
             search : {
                 'book_number' : '',
                 'book_name' : '',
-                'librarian' : '',
+                'author' : '',
             },
-            allLibrarian : []
+            allAuthors : []
         }
     },
 
