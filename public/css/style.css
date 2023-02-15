@@ -6,3 +6,6 @@
 .setHeight{
     min-height: 92vh;
 }
+.margin-top-bottom{
+    padding: 3vh 0vh 3vh 0vh;
+}

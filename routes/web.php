@@ -23,7 +23,8 @@ Route::get('/', function () {
 Auth::routes(['register' => false, // Registration Routes...
     'reset' => false, // Password Reset Routes...
     'verify' => false, // Email Verification Routes...
-    ]);
+]);
 Route::get('/', [GuestController::class, 'index']);
-
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::post('/logout-form', [HomeController::class, 'logoutForm'])->name('logout-form');
+

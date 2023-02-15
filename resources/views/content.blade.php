@@ -41,8 +41,23 @@
                             </a>
                         </li>
 
-                        @if(Auth::user()->role_id == 2)
 
+                        @if(Auth::user()->role_id == $librarianRoleId->id)
+                            <li class="nav-item ml-1 ">
+                                <a class="nav-link  active  " href="/users">
+                                    USERS
+                                </a>
+                            </li>
+                            <li class="nav-item ml-1 ">
+                                <a class="nav-link  active  " href="/users">
+                                    AUTHORS
+                                </a>
+                            </li>
+                            <li class="nav-item ml-1 ">
+                                <a class="nav-link  active  " href="/users">
+                                    BOOKS
+                                </a>
+                            </li>
                         @endif
                         <li class="nav-item  ml-1 ">
                             <a class="nav-link  active  logout" href="/">
