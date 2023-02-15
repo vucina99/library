@@ -5440,16 +5440,66 @@ __webpack_require__.r(__webpack_exports__);
   name: "UsersList",
   data: function data() {
     return {
+      allUsers: [],
       user: {
         'firstName': '',
         'lastName': '',
         'email': '',
-        'password': ''
-      }
+        'password': '',
+        'role': ''
+      },
+      errorData: {},
+      success: false,
+      error: false,
+      allRoles: []
     };
   },
   methods: {
-    addUser: function addUser() {}
+    addUser: function addUser() {
+      var _this = this;
+      //treba validacija da se radi i na beku i na frontu, ali na ovoj aplikaciji uradicu samo na backu
+      axios.post('/librarian/create/user', this.user).then(function (_ref) {
+        var data = _ref.data;
+        _this.success = true;
+        _this.errorData = {};
+        _this.error = false;
+        _this.allUsers.push(data);
+        _this.user = {
+          ime: '',
+          email: '',
+          lozinka: '',
+          role: 1
+        };
+      })["catch"](function (error) {
+        if (error.response.status == 422) {
+          console.log(error.response);
+          _this.errorData = error.response.data.errors;
+          _this.success = false;
+          _this.error = false;
+        } else {
+          _this.error = true;
+          _this.success = false;
+        }
+      });
+    },
+    getUsers: function getUsers() {
+      var _this2 = this;
+      axios.get('/librarian/get/users').then(function (_ref2) {
+        var data = _ref2.data;
+        _this2.allUsers = data;
+      });
+    },
+    getRoles: function getRoles() {
+      var _this3 = this;
+      axios.get('/librarian/get/roles').then(function (_ref3) {
+        var data = _ref3.data;
+        _this3.allRoles = data;
+      });
+    }
+  },
+  created: function created() {
+    this.getUsers();
+    this.getRoles();
   }
 });
 
@@ -6064,7 +6114,57 @@ var render = function render() {
     staticClass: "row"
   }, [_c("div", {
     staticClass: "col-lg-4 col-md-12"
-  }, [_c("form", {
+  }, [Object.keys(this.errorData).length > 0 ? _c("div", {
+    staticClass: "alert error-danger alert-danger alert-dismissible fade show",
+    attrs: {
+      role: "alert"
+    }
+  }, _vm._l(_vm.errorData, function (error, index) {
+    return _c("div", {
+      key: index
+    }, _vm._l(error, function (errorChildern, key) {
+      return _c("span", {
+        key: key
+      }, [_c("i", {
+        staticClass: "fa fa-exclamation-triangle",
+        attrs: {
+          "aria-hidden": "true"
+        }
+      }), _vm._v("    " + _vm._s(errorChildern) + "\n                                             ")]);
+    }), 0);
+  }), 0) : _vm._e(), _vm._v(" "), _vm.success ? _c("div", {
+    staticClass: "alert error-danger alert-success alert-dismissible fade show",
+    attrs: {
+      role: "alert"
+    }
+  }, [_vm._m(0), _vm._v(" "), _c("button", {
+    staticClass: "close",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        _vm.success = false;
+      }
+    }
+  }, [_c("span", [_vm._v("×")])])]) : _vm._e(), _vm._v(" "), _vm.error ? _c("div", {
+    staticClass: "alert error-danger alert-danger alert-dismissible fade show",
+    attrs: {
+      role: "alert"
+    }
+  }, [_vm._m(1), _vm._v(" "), _c("button", {
+    staticClass: "close",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        _vm.error = false;
+      }
+    }
+  }, [_c("span", [_vm._v("×")])])]) : _vm._e(), _vm._v(" "), _c("form", {
     attrs: {
       action: ""
     }
@@ -6185,6 +6285,46 @@ var render = function render() {
       }
     }
   })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group search-font-size"
+  }, [_c("label", {
+    attrs: {
+      "for": "role"
+    }
+  }, [_vm._v("ROLE")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.user.role,
+      expression: "user.role"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      name: "role",
+      id: "role"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.$set(_vm.user, "role", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: ""
+    }
+  }, [_vm._v("SELECT ROLE")]), _vm._v(" "), _vm._l(_vm.allRoles, function (role, key) {
+    return _c("option", {
+      key: key,
+      domProps: {
+        value: role.id
+      }
+    }, [_vm._v(_vm._s(role.name))]);
+  })], 2)]), _vm._v(" "), _c("div", {
     staticClass: "pt-3"
   }, [_c("div", {
     staticClass: "w-100 d-flex justify-content-between"
@@ -6203,18 +6343,47 @@ var render = function render() {
     }
   })])])])])]), _vm._v(" "), _c("div", {
     staticClass: "col-lg-1 col-md-12"
-  }), _vm._v(" "), _vm._m(0)])])]);
-};
-var staticRenderFns = [function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
+  }), _vm._v(" "), _c("div", {
     staticClass: "col-lg-7 col-md-12 pt-4"
   }, [_c("div", {
     staticClass: "table-responsive"
   }, [_c("table", {
     staticClass: "table table-text-size"
-  }, [_c("thead", {
+  }, [_vm._m(2), _vm._v(" "), _c("tbody", _vm._l(_vm.allUsers, function (user, index) {
+    var _user$role;
+    return _c("tr", [_c("td", {
+      staticClass: "text-center"
+    }, [_vm._v(_vm._s(user.firstName))]), _vm._v(" "), _c("td", {
+      staticClass: "text-center"
+    }, [_vm._v(_vm._s(user.lastName))]), _vm._v(" "), _c("td", {
+      staticClass: "text-center"
+    }, [_vm._v(_vm._s(user.email))]), _vm._v(" "), _c("td", {
+      staticClass: "text-center"
+    }, [_vm._v(_vm._s((_user$role = user.role) === null || _user$role === void 0 ? void 0 : _user$role.name))]), _vm._v(" "), _vm._m(3, true)]);
+  }), 0)])])])])])]);
+};
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("span", [_c("i", {
+    staticClass: "fa fa-check-square",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }), _vm._v("   SUCCESS ADDED")]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("span", [_c("i", {
+    staticClass: "fa fa-exclamation-triangle",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }), _vm._v("   CHECK ALL FIELDS")]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("thead", {
     staticClass: "bg-dark text-light"
   }, [_c("tr", [_c("th", {
     staticClass: "text-center",
@@ -6236,13 +6405,16 @@ var staticRenderFns = [function () {
     attrs: {
       scope: "col"
     }
-  }, [_vm._v("EDIT")])])]), _vm._v(" "), _c("tbody", [_c("tr", [_c("td", {
-    staticClass: "text-center"
-  }, [_vm._v("Mark")]), _vm._v(" "), _c("td", {
-    staticClass: "text-center"
-  }, [_vm._v("Otto")]), _vm._v(" "), _c("td", {
-    staticClass: "text-center"
-  }, [_vm._v("@mdo")]), _vm._v(" "), _c("td", {
+  }, [_vm._v("ROLE")]), _vm._v(" "), _c("th", {
+    staticClass: "text-center",
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("EDIT")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("td", {
     staticClass: "text-center"
   }, [_c("div", {
     staticClass: "w-100 text-center"
@@ -6251,7 +6423,7 @@ var staticRenderFns = [function () {
     attrs: {
       "aria-hidden": "true"
     }
-  })])])])])])])]);
+  })])]);
 }];
 render._withStripped = true;
 
