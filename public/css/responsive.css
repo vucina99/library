@@ -1,19 +1,29 @@
 @media (max-width: 575.98px) {
-
+    .table-text-size {
+        font-size: 11.5px;
+    }
 }
 
 @media (min-width: 576px) and (max-width: 767.98px) {
-
+    .table-text-size {
+        font-size: 11.5px;
+    }
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
-
+    .table-text-size {
+        font-size: 12.5px;
+    }
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
-
+    .table-text-size {
+        font-size: 12.5px;
+    }
 }
 
 @media (min-width: 1200px) {
-
+    .table-text-size {
+        font-size: 13px;
+    }
 }
