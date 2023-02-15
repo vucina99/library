@@ -22,3 +22,6 @@ table tbody tr:hover {
     color: #ffffff;
     cursor: pointer;
 }
+.img-author{
+   width: 50%;
+}

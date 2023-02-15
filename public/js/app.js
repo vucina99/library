@@ -5375,14 +5375,60 @@ __webpack_require__.r(__webpack_exports__);
   name: "AuthorsList",
   data: function data() {
     return {
+      errorData: {},
+      success: false,
+      error: false,
+      allAuthors: [],
       author: {
         'firstName': '',
-        'lastName': ''
+        'lastName': '',
+        'image': ''
       }
     };
   },
   methods: {
-    addAuthor: function addAuthor() {}
+    getAuthors: function getAuthors() {
+      var _this = this;
+      axios.get('/librarian/get/authors').then(function (_ref) {
+        var data = _ref.data;
+        _this.allAuthors = data;
+      });
+    },
+    onFileSelected: function onFileSelected(event) {
+      this.author.image = event.target.files[0];
+      console.log(event.target.files[0]);
+    },
+    addAuthor: function addAuthor() {
+      var _this2 = this;
+      var formData = new FormData();
+      formData.append('image', this.author.image);
+      formData.append('firstName', this.author.firstName);
+      formData.append('lastName', this.author.lastName);
+      axios.post('/librarian/create/author', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (_ref2) {
+        var data = _ref2.data;
+        _this2.allAuthors.push(data);
+        _this2.errorData = {};
+        _this2.success = true;
+        _this2.error = false;
+      })["catch"](function (error) {
+        if (error.response.status == 422) {
+          console.log(error.response);
+          _this2.errorData = error.response.data.errors;
+          _this2.success = false;
+          _this2.error = false;
+        } else {
+          _this2.error = true;
+          _this2.success = false;
+        }
+      });
+    }
+  },
+  created: function created() {
+    this.getAuthors();
   }
 });
 
@@ -5895,7 +5941,57 @@ var render = function render() {
     staticClass: "row"
   }, [_c("div", {
     staticClass: "col-lg-4 col-md-12"
-  }, [_c("form", {
+  }, [Object.keys(this.errorData).length > 0 ? _c("div", {
+    staticClass: "alert error-danger alert-danger alert-dismissible fade show",
+    attrs: {
+      role: "alert"
+    }
+  }, _vm._l(_vm.errorData, function (error, index) {
+    return _c("div", {
+      key: index
+    }, _vm._l(error, function (errorChildern, key) {
+      return _c("span", {
+        key: key
+      }, [_c("i", {
+        staticClass: "fa fa-exclamation-triangle",
+        attrs: {
+          "aria-hidden": "true"
+        }
+      }), _vm._v("    " + _vm._s(errorChildern) + "\n                                             ")]);
+    }), 0);
+  }), 0) : _vm._e(), _vm._v(" "), _vm.success ? _c("div", {
+    staticClass: "alert error-danger alert-success alert-dismissible fade show",
+    attrs: {
+      role: "alert"
+    }
+  }, [_vm._m(0), _vm._v(" "), _c("button", {
+    staticClass: "close",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        _vm.success = false;
+      }
+    }
+  }, [_c("span", [_vm._v("×")])])]) : _vm._e(), _vm._v(" "), _vm.error ? _c("div", {
+    staticClass: "alert error-danger alert-danger alert-dismissible fade show",
+    attrs: {
+      role: "alert"
+    }
+  }, [_vm._m(1), _vm._v(" "), _c("button", {
+    staticClass: "close",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        _vm.error = false;
+      }
+    }
+  }, [_c("span", [_vm._v("×")])])]) : _vm._e(), _vm._v(" "), _c("form", {
     attrs: {
       action: "",
       enctype: "multipart/form-data"
@@ -5965,13 +6061,16 @@ var render = function render() {
       "for": "file"
     }
   }, [_vm._v("IMAGE")]), _vm._v(" "), _c("input", {
-    ref: "file",
     staticClass: "form-control",
     attrs: {
       type: "file",
       name: "file",
       id: "file",
-      placeholder: "IMAGE"
+      placeholder: "IMAGE",
+      accept: ".jpg, .jpeg, .png"
+    },
+    on: {
+      change: _vm.onFileSelected
     }
   })]), _vm._v(" "), _c("div", {
     staticClass: "pt-3"
@@ -5992,18 +6091,58 @@ var render = function render() {
     }
   })])])])])]), _vm._v(" "), _c("div", {
     staticClass: "col-lg-1 col-md-12"
-  }), _vm._v(" "), _vm._m(0)])])]);
-};
-var staticRenderFns = [function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
+  }), _vm._v(" "), _c("div", {
     staticClass: "col-lg-7 col-md-12 pt-4"
   }, [_c("div", {
     staticClass: "table-responsive"
   }, [_c("table", {
     staticClass: "table table-text-size"
-  }, [_c("thead", {
+  }, [_vm._m(2), _vm._v(" "), _c("tbody", [_vm._l(_vm.allAuthors, function (author, index) {
+    var _author$image;
+    return _vm.allAuthors.length > 0 ? _c("tr", {
+      key: index
+    }, [_c("td", {
+      staticClass: "text-center"
+    }, [_c("img", {
+      staticClass: "img-author",
+      attrs: {
+        src: "/img/authors/" + ((_author$image = author.image) === null || _author$image === void 0 ? void 0 : _author$image.name),
+        alt: ""
+      }
+    })]), _vm._v(" "), _c("td", {
+      staticClass: "text-center"
+    }, [_vm._v(_vm._s(author.firstName))]), _vm._v(" "), _c("td", {
+      staticClass: "text-center"
+    }, [_vm._v(_vm._s(author.lastName))]), _vm._v(" "), _vm._m(3, true)]) : _vm._e();
+  }), _vm._v(" "), _c("tr", [_vm.allAuthors.length < 1 ? _c("td", {
+    staticClass: "text-center bg-light",
+    attrs: {
+      colspan: "4"
+    }
+  }, [_vm._v("NO RESULT")]) : _vm._e()])], 2)])])])])])]);
+};
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("span", [_c("i", {
+    staticClass: "fa fa-check-square",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }), _vm._v("   SUCCESS ADDED")]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("span", [_c("i", {
+    staticClass: "fa fa-exclamation-triangle",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }), _vm._v("   CHECK ALL FIELDS")]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("thead", {
     staticClass: "bg-dark text-light"
   }, [_c("tr", [_c("th", {
     staticClass: "text-center",
@@ -6025,13 +6164,11 @@ var staticRenderFns = [function () {
     attrs: {
       scope: "col"
     }
-  }, [_vm._v("EDIT")])])]), _vm._v(" "), _c("tbody", [_c("tr", [_c("td", {
-    staticClass: "text-center"
-  }, [_vm._v("Mark")]), _vm._v(" "), _c("td", {
-    staticClass: "text-center"
-  }, [_vm._v("Otto")]), _vm._v(" "), _c("td", {
-    staticClass: "text-center"
-  }, [_vm._v("@mdo")]), _vm._v(" "), _c("td", {
+  }, [_vm._v("EDIT")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("td", {
     staticClass: "text-center"
   }, [_c("div", {
     staticClass: "w-100 text-center"
@@ -6040,7 +6177,7 @@ var staticRenderFns = [function () {
     attrs: {
       "aria-hidden": "true"
     }
-  })])])])])])])]);
+  })])]);
 }];
 render._withStripped = true;
 

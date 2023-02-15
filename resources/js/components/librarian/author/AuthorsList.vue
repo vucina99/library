@@ -3,6 +3,36 @@
         <div class="container">
             <div class="row ">
                 <div class="col-lg-4 col-md-12">
+                    <div v-if="Object.keys(this.errorData).length > 0"
+                         class="alert error-danger alert-danger alert-dismissible fade show"
+                         role="alert">
+
+                        <div v-for="(error, index) in errorData" :key="index">
+                                                 <span v-for="(errorChildern, key) in error" :key="key">
+                                                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp;  {{
+                                                         errorChildern
+                                                     }}
+                                                 </span>
+                        </div>
+
+                    </div>
+                    <div v-if="success"
+                         class="alert error-danger alert-success alert-dismissible fade show"
+                         role="alert">
+                        <span><i class="fa fa-check-square" aria-hidden="true"></i> &nbsp; SUCCESS ADDED</span>
+                        <button @click.prevent="success = false" type="button" class="close">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div v-if="error"
+                         class="alert error-danger alert-danger alert-dismissible fade show"
+                         role="alert">
+                        <span> <i class="fa fa-exclamation-triangle"
+                                  aria-hidden="true"></i> &nbsp; CHECK ALL FIELDS</span>
+                        <button @click.prevent="error = false" type="button" class="close">
+                            <span>&times;</span>
+                        </button>
+                    </div>
                     <form action="" enctype="multipart/form-data">
                         <div class="form-group search-font-size">
                             <label for="firstName">FIRST NAME</label>
@@ -21,8 +51,8 @@
                         <div class="form-group search-font-size">
                             <label for="file">IMAGE</label>
                             <input type="file" name="file" id="file"
-                                   ref="file"
-                                   class="form-control" placeholder="IMAGE">
+                                   class="form-control" placeholder="IMAGE" @change="onFileSelected"
+                                   accept=".jpg, .jpeg, .png">
                         </div>
 
                         <div class="pt-3">
@@ -50,14 +80,18 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td class="text-center">Mark</td>
-                                <td class="text-center">Otto</td>
-                                <td class="text-center">@mdo</td>
+                            <tr v-if="allAuthors.length > 0" v-for="(author , index) in allAuthors" :key="index" >
+                                <td class="text-center"><img :src="'/img/authors/'+author.image?.name"  class="img-author" alt=""></td>
+                                <td class="text-center">{{ author.firstName }}</td>
+                                <td class="text-center">{{ author.lastName }}</td>
                                 <td class="text-center">
-                                    <div class="w-100 text-center"><i class="fa text-dark fa fa-pencil" aria-hidden="true"></i>
+                                    <div class="w-100 text-center"><i class="fa text-dark fa fa-pencil"
+                                                                      aria-hidden="true"></i>
                                     </div>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" v-if="allAuthors.length < 1" class="text-center bg-light">NO RESULT</td>
                             </tr>
 
                             </tbody>
@@ -75,17 +109,61 @@ export default {
     name: "AuthorsList",
     data() {
         return {
+            errorData: {},
+            success: false,
+            error: false,
+            allAuthors: [],
             author: {
                 'firstName': '',
                 'lastName': '',
+                'image': ''
             }
         }
     },
 
     methods: {
+        getAuthors() {
+            axios.get('/librarian/get/authors').then(({data}) => {
+                this.allAuthors = data
+            })
+        },
+        onFileSelected(event) {
+            this.author.image = event.target.files[0];
+            console.log(event.target.files[0]);
+        },
         addAuthor() {
+            const formData = new FormData();
+            formData.append('image', this.author.image);
+            formData.append('firstName', this.author.firstName);
+            formData.append('lastName', this.author.lastName);
+
+            axios.post('/librarian/create/author', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+                .then(({data}) => {
+                    this.allAuthors.push(data)
+                    this.errorData = {}
+                    this.success = true
+                    this.error = false
+                })
+                .catch(error => {
+                    if (error.response.status == 422) {
+                        console.log(error.response);
+                        this.errorData = error.response.data.errors
+                        this.success = false
+                        this.error = false
+                    } else {
+                        this.error = true
+                        this.success = false
+                    }
+                });
 
         }
+    },
+    created() {
+        this.getAuthors();
     }
 }
 </script>
