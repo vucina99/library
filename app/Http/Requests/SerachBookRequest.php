@@ -25,8 +25,8 @@ class SerachBookRequest extends FormRequest
     public function rules()
     {
         return [
-            'bookNumber' => 'nullable|regex:/^[0-9]+$/',
-            'title' => 'nullable|min:2|max:100',
+            'search.bookNumber' => 'nullable|regex:/^[0-9]+$/',
+            'search.title' => 'nullable|min:2|max:100',
         ];
     }
 }

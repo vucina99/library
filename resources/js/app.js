@@ -31,6 +31,7 @@ Vue.component('users-list', require('./components/librarian/user/UsersList').def
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 import VModal from 'vue-js-modal';
+
 Vue.use(VModal);
 import Vue from 'vue'
 

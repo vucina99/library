@@ -5326,6 +5326,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
+      error: false,
       search: {
         'bookNumber': '',
         'title': '',
@@ -5371,11 +5372,12 @@ __webpack_require__.r(__webpack_exports__);
         'search': this.search
       }).then(function (_ref2) {
         var data = _ref2.data;
-        console.log(data);
+        _this2.error = false;
         _this2.allBooks = data.data;
         _this2.paginateCount = data.count;
       })["catch"](function (error) {
         console.log('error get books');
+        _this2.error = true;
       });
     },
     showBookModal: function showBookModal(data) {
@@ -6233,7 +6235,23 @@ var render = function render() {
     staticClass: "row"
   }, [_c("div", {
     staticClass: "col-lg-4 col-md-12"
-  }, [_c("show-book"), _vm._v(" "), _c("form", {
+  }, [_c("show-book"), _vm._v(" "), _vm.error ? _c("div", {
+    staticClass: "alert error-danger alert-danger alert-dismissible fade show",
+    attrs: {
+      role: "alert"
+    }
+  }, [_vm._m(0), _vm._v(" "), _c("button", {
+    staticClass: "close",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        _vm.error = false;
+      }
+    }
+  }, [_c("span", [_vm._v("×")])])]) : _vm._e(), _vm._v(" "), _c("form", {
     attrs: {
       action: ""
     }
@@ -6349,7 +6367,7 @@ var render = function render() {
     staticClass: "table-responsive"
   }, [_c("table", {
     staticClass: "table table-text-size"
-  }, [_vm._m(0), _vm._v(" "), _c("tbody", [_vm._l(_vm.allBooks, function (book, index) {
+  }, [_vm._m(1), _vm._v(" "), _c("tbody", [_vm._l(_vm.allBooks, function (book, index) {
     var _book$author;
     return _c("tr", {
       key: index
@@ -6397,7 +6415,7 @@ var render = function render() {
         return _vm.getBooks(_vm.page - 1);
       }
     }
-  }, [_vm._m(1)]) : _vm._e(), _vm._v(" "), _vm._l(_vm.paginateCount, function (index) {
+  }, [_vm._m(2)]) : _vm._e(), _vm._v(" "), _vm._l(_vm.paginateCount, function (index) {
     return _c("li", {
       key: index,
       "class": [_vm.page == index - 1 ? "active" : "", "page-item"],
@@ -6421,9 +6439,18 @@ var render = function render() {
         return _vm.getBooks(_vm.page + 1);
       }
     }
-  }, [_vm._m(2)]) : _vm._e()], 2)]) : _vm._e()])])])]);
+  }, [_vm._m(3)]) : _vm._e()], 2)]) : _vm._e()])])])]);
 };
 var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("span", [_c("i", {
+    staticClass: "fa fa-exclamation-triangle",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }), _vm._v("   CHECK ALL FIELDS")]);
+}, function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("thead", {

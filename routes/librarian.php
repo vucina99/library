@@ -2,11 +2,15 @@
 
 use App\Http\Controllers\LibrarianController;
 use Illuminate\Support\Facades\Route;
+
 Route::pattern('id', '^\d+$'); //proveravamo da li je svaki prosledjeni id integer
-Route::group(['prefix' => 'librarian' , 'middleware' => 'librarian'], function () {
+Route::group(['prefix' => 'librarian', 'middleware' => 'librarian'], function () {
+
+    // da ne bih korstio mnogo routes fajlova, napravio sam jedan i sva specijalne mogucnosti bibliotekara sam napisao ovde
+    // i ako je mnogo lepse da se razdvoje, nema ih mnogo pa nema smisla praviti vise fajlova :)
+
 
     //users
-
     Route::get('/users', [LibrarianController::class, 'users']);
     Route::get('/get/users', [LibrarianController::class, 'getUsers']);
     Route::post('/create/user', [LibrarianController::class, 'createUser']);

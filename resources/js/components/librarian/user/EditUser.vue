@@ -73,7 +73,7 @@
                                     <br><br>
                                     <button class="btn btn-danger w-100 mr-1" @click.prevent="deleteUser()">
                                         DELETE USER <i class="fa fa fa-trash"
-                                                         aria-hidden="true"></i>
+                                                       aria-hidden="true"></i>
                                     </button>
 
                                 </div>
@@ -122,7 +122,7 @@ export default {
             this.$modal.hide('edit-user-modal');
         },
         beforeOpen(event) {
-            this.user = JSON.parse(JSON.stringify( event.params.user));
+            this.user = JSON.parse(JSON.stringify(event.params.user));
             this.user.role = this.user.role.id;
             this.userIndex = event.params.index;
             this.success = false
@@ -130,15 +130,15 @@ export default {
             this.error = false
             console.log(this.user);
         },
-        deleteUser(){
+        deleteUser() {
             axios.delete('/librarian/delete/user/' + this.user.id).then(({data}) => {
                 this.$root.$emit('removeUserFromArray', this.userIndex);
                 this.closeModal();
             })
         },
-        editUser(){
+        editUser() {
             //treba validacija da se radi i na beku i na frontu, ali na ovoj aplikaciji uradicu samo na backu
-            axios.patch('/librarian/edit/user/'+this.user.id, this.user).then(({data}) => {
+            axios.patch('/librarian/edit/user/' + this.user.id, this.user).then(({data}) => {
                 this.success = true
                 this.errorData = {}
                 this.error = false
@@ -146,7 +146,7 @@ export default {
             }).catch((error) => {
                 if (error.response.status == 422) {
                     console.log(error.response);
-                    this.errorData =  error.response.data.errors
+                    this.errorData = error.response.data.errors
                     this.success = false
                     this.error = false
                 } else {

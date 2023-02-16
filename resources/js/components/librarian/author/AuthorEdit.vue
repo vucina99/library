@@ -71,7 +71,7 @@
                                     <br><br>
                                     <button class="btn btn-danger w-100 mr-1" @click.prevent="deleteAutor()">
                                         DELETE AUTHOR <i class="fa fa fa-trash"
-                                                       aria-hidden="true"></i>
+                                                         aria-hidden="true"></i>
                                     </button>
 
                                 </div>
@@ -125,13 +125,13 @@ export default {
             this.error = false
 
         },
-        deleteAutor(){
+        deleteAutor() {
             axios.delete('/librarian/delete/author/' + this.author.id).then(({data}) => {
                 this.$root.$emit('removeAuthorFromArray', this.authorIndex);
                 this.closeModal();
             })
         },
-        editAutor(){
+        editAutor() {
             const formDataUpdate = new FormData();
             formDataUpdate.append('image', this.author.image);
             formDataUpdate.append('firstName', this.author.firstName);
@@ -151,7 +151,7 @@ export default {
             }).catch((error) => {
                 if (error.response.status == 422) {
                     console.log(error.response);
-                    this.errorData =  error.response.data.errors
+                    this.errorData = error.response.data.errors
                     this.success = false
                     this.error = false
                 } else {

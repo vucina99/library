@@ -3,6 +3,15 @@
         <div class="row ">
             <div class="col-lg-4 col-md-12">
                 <show-book></show-book>
+                <div v-if="error"
+                     class="alert error-danger alert-danger alert-dismissible fade show"
+                     role="alert">
+                        <span> <i class="fa fa-exclamation-triangle"
+                                  aria-hidden="true"></i> &nbsp; CHECK ALL FIELDS</span>
+                    <button @click.prevent="error = false" type="button" class="close">
+                        <span>&times;</span>
+                    </button>
+                </div>
                 <form action="">
                     <div class="form-group search-font-size">
                         <label for="book_number">BOOK NUMBER</label>
@@ -113,6 +122,7 @@ export default {
     },
     data() {
         return {
+            error: false,
             search: {
                 'bookNumber': '',
                 'title': '',
@@ -147,21 +157,20 @@ export default {
             }
         },
         getBooks(page = 0) {
-
             if (this.search.author == '' || this.search.author == null || typeof this.search.author['id'] == 'undefined') {
                 this.search.author = ''
             }
-
             this.page = page
             axios.post('/get/book', {
                 'page': this.page,
                 'search': this.search
             }).then(({data}) => {
-                console.log(data);
+                this.error = false
                 this.allBooks = data.data
                 this.paginateCount = data.count
             }).catch((error) => {
-                console.log('error get books')
+                console.log('error get books');
+                this.error = true
             })
         },
 

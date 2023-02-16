@@ -13,21 +13,21 @@
                         <form action="">
                             <div class="form-group search-font-size">
                                 <label for="firstName">FIRST NAME</label>
-                                <input type="text" name="firstName" disabled  id="firstName"
+                                <input type="text" name="firstName" disabled id="firstName"
                                        v-model="user.firstName"
                                        class="form-control" placeholder="FIRST NAME">
                             </div>
 
                             <div class="form-group search-font-size">
                                 <label for="lastName">LAST NAME</label>
-                                <input type="text" name="lastName" disabled  id="lastName"
+                                <input type="text" name="lastName" disabled id="lastName"
                                        v-model="user.lastName"
                                        class="form-control" placeholder="LAST NAME">
                             </div>
 
                             <div class="form-group search-font-size">
                                 <label for="email">E-MAIL</label>
-                                <input type="email" name="email" disabled  id="email"
+                                <input type="email" name="email" disabled id="email"
                                        v-model="user.email"
                                        class="form-control" placeholder="E-MAIL">
                             </div>

@@ -21,7 +21,12 @@ use Illuminate\Support\Facades\Auth;
 
 class LibrarianController extends Controller
 {
-//  private User $user; Zeza me verzija php pa ne mogu da stavim koj ie tip :)
+
+    // da ne bih korstio mnogo kontrolera, smatram da je u ovoj situaciji nepotrebno npr. UserController, BookController itd.
+    // sve mogucnosti koje ima Bibliotekar stavio sam ovde
+
+
+    //  private User $user; Zeza me verzija php pa ne mogu da stavim koj ie tip :)
     private $user;
     private $role;
     private $author;
@@ -183,7 +188,8 @@ class LibrarianController extends Controller
         return response('{}', 204);
     }
 
-    public function editBook(UpdateBookRequest $request, $id){
+    public function editBook(UpdateBookRequest $request, $id)
+    {
 
         $book = Book::find($id);
         if (!$book) {

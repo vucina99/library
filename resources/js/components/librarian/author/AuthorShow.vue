@@ -10,7 +10,7 @@
                         <h4 class="text-center text-dark">SHOW AUTHOR </h4> <br><br>
 
                         <div class="w-100 d-flex justify-content-center">
-                            <img :src="'/img/authors/'+author.image?.name"  class="img-fluid" alt="">
+                            <img :src="'/img/authors/'+author.image?.name" class="img-fluid" alt="">
                         </div>
 
                         <form action="" enctype="multipart/form-data">
@@ -76,9 +76,9 @@ export default {
             this.error = false
 
         },
-        addAuthor(){
+        addAuthor() {
             //treba validacija da se radi i na beku i na frontu, ali na ovoj aplikaciji uradicu samo na backu
-            axios.patch('/librarian/edit/user/'+this.user.id, this.user).then(({data}) => {
+            axios.patch('/librarian/edit/user/' + this.user.id, this.user).then(({data}) => {
                 this.success = true
                 this.errorData = {}
                 this.error = false
@@ -86,7 +86,7 @@ export default {
             }).catch((error) => {
                 if (error.response.status == 422) {
                     console.log(error.response);
-                    this.errorData =  error.response.data.errors
+                    this.errorData = error.response.data.errors
                     this.success = false
                     this.error = false
                 } else {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SerachBookRequest;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ class HomeController extends Controller
     {
         $this->middleware('auth');
     }
+
     /**
      * Show the application dashboard.
      *
@@ -37,7 +39,8 @@ class HomeController extends Controller
 
 
     //ovde cemo raditi paginaciju jer moze da bude puno knjiga :)
-    public function getBook(Request $request){
+    public function getBook(SerachBookRequest $request)
+    {
         //number data je broj koliko prikazujemo knjiga
         $numberData = 25;
         $book = Book::query();
@@ -47,7 +50,7 @@ class HomeController extends Controller
 
 
         //proveravamo da li postoji search, jer na home stranici ga ima a na books stranici to nemamo
-        if(isset($request->search)){
+        if (isset($request->search)) {
             $search = (object)$request->search;
         }
 
@@ -55,10 +58,10 @@ class HomeController extends Controller
             $book = $book->where('author_id', $search->author['id']);
         }
         if (isset($request->search) && $search->title !== '' && $search->title !== null) {
-            $book = $book->where('title','LIKE' , '%'.$search->title.'%');
+            $book = $book->where('title', 'LIKE', '%' . $search->title . '%');
         }
         if (isset($request->search) && $search->bookNumber !== '' && $search->bookNumber !== null) {
-            $book = $book->where('book_number', 'LIKE' , '%'.$search->bookNumber.'%');
+            $book = $book->where('book_number', 'LIKE', '%' . $search->bookNumber . '%');
         }
 
         //da bi dobili tacan broj koliko treba da prikazemo brojeva u paginaciji, ali uzimamo gornju vrednost

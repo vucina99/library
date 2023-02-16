@@ -55,7 +55,6 @@
                             </div>
 
 
-
                             <div class="form-group search-font-size">
                                 <label>AUTHOR</label>
                                 <v-select
@@ -114,12 +113,12 @@ export default {
     },
 
     methods: {
-        editBook(){
-            if( this.book.author == '' || this.book.author == null || typeof this.book.author['id'] == 'undefined'){
+        editBook() {
+            if (this.book.author == '' || this.book.author == null || typeof this.book.author['id'] == 'undefined') {
                 this.book.author = ''
             }
 
-            axios.patch('/librarian/edit/book/'+this.book.id, this.book).then(({data}) => {
+            axios.patch('/librarian/edit/book/' + this.book.id, this.book).then(({data}) => {
                 this.success = true
                 this.errorData = {}
                 this.error = false
@@ -127,7 +126,7 @@ export default {
             }).catch((error) => {
                 if (error.response.status == 422) {
                     console.log(error.response);
-                    this.errorData =  error.response.data.errors
+                    this.errorData = error.response.data.errors
                     this.success = false
                     this.error = false
                 } else {
@@ -140,7 +139,7 @@ export default {
         closeModal() {
             this.$modal.hide('edit-book-modal');
         },
-        deleteBook(){
+        deleteBook() {
 
             axios.delete('/librarian/delete/book/' + this.book.id).then(({data}) => {
                 this.$root.$emit('removeBookFromArray', this.bookIndex);

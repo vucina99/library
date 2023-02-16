@@ -47,7 +47,7 @@
                             <label for="lastName">LAST NAME</label>
                             <input type="text" name="lastName" id="lastName"
                                    v-model="author.lastName"
-                                   class="form-control"  required placeholder="LAST NAME">
+                                   class="form-control" required placeholder="LAST NAME">
                         </div>
 
                         <div class="form-group search-font-size">
@@ -82,8 +82,9 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr v-if="allAuthors.length > 0" v-for="(author , index) in allAuthors" :key="index" >
-                                <td class="text-center" @click.prevent="showAuthor(author)"><img :src="'/img/authors/'+author.image?.name"  class="img-author" alt=""></td>
+                            <tr v-if="allAuthors.length > 0" v-for="(author , index) in allAuthors" :key="index">
+                                <td class="text-center" @click.prevent="showAuthor(author)"><img
+                                    :src="'/img/authors/'+author.image?.name" class="img-author" alt=""></td>
                                 <td class="text-center" @click.prevent="showAuthor(author)">{{ author.firstName }}</td>
                                 <td class="text-center" @click.prevent="showAuthor(author)">{{ author.lastName }}</td>
                                 <td class="text-center" @click.prevent="editAuthor(author,index)">
@@ -93,7 +94,7 @@
                                 </td>
                             </tr>
                             <tr v-if="allAuthors.length < 1">
-                                <td colspan="4"  class="text-center bg-light">NO RESULT</td>
+                                <td colspan="4" class="text-center bg-light">NO RESULT</td>
                             </tr>
 
                             </tbody>
@@ -196,7 +197,6 @@ export default {
 
             }
         })
-
 
 
     }
