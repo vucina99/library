@@ -81,7 +81,6 @@ export default {
         },
         beforeOpen(event) {
             this.user = JSON.parse(JSON.stringify(event.params.user));
-            console.log(this.user)
         },
 
     },

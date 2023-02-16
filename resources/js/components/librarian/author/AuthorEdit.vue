@@ -137,7 +137,6 @@ export default {
             formDataUpdate.append('firstName', this.author.firstName);
             formDataUpdate.append('lastName', this.author.lastName);
             formDataUpdate.append('id', this.author.id);
-            console.log(formDataUpdate);
             //treba validacija da se radi i na beku i na frontu, ali na ovoj aplikaciji uradicu samo na backu
             axios.post('/librarian/edit/author', formDataUpdate, {
                 headers: {
@@ -150,7 +149,6 @@ export default {
                 this.$root.$emit('editedAuthor', {'data': data, 'index': this.authorIndex});
             }).catch((error) => {
                 if (error.response.status == 422) {
-                    console.log(error.response);
                     this.errorData = error.response.data.errors
                     this.success = false
                     this.error = false

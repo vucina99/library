@@ -125,7 +125,6 @@ export default {
                 this.$root.$emit('editedBook', {'data': data, 'index': this.bookIndex});
             }).catch((error) => {
                 if (error.response.status == 422) {
-                    console.log(error.response);
                     this.errorData = error.response.data.errors
                     this.success = false
                     this.error = false
@@ -152,11 +151,9 @@ export default {
                 this.allAuthors = data
                 //radimo override dobijenog objekta da bi imali full name
                 this.allAuthors.forEach((author, index) => {
-                    console.log(author);
                     author.name = author.firstName + ' ' + author.lastName
                 })
 
-                console.log(this.allAuthors)
             })
         },
         beforeOpen(event) {
@@ -169,7 +166,6 @@ export default {
             this.errorData = {}
             this.error = false
 
-            console.log(this.book)
         },
     },
     created() {

@@ -135,11 +135,11 @@ export default {
         getAuthors() {
             axios.get('/librarian/get/authors').then(({data}) => {
                 this.allAuthors = data
+                console.log(this.allAuthors);
             })
         },
         onFileSelected(event) {
             this.author.image = event.target.files[0];
-            console.log(event.target.files[0]);
         },
         addAuthor() {
             const formData = new FormData();
@@ -160,7 +160,6 @@ export default {
                 })
                 .catch(error => {
                     if (error.response.status == 422) {
-                        console.log(error.response);
                         this.errorData = error.response.data.errors
                         this.success = false
                         this.error = false

@@ -168,7 +168,6 @@ export default {
                 }
             }).catch((error) => {
                 if (error.response.status == 422) {
-                    console.log(error.response);
                     this.errorData = error.response.data.errors
                     this.success = false
                     this.error = false

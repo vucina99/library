@@ -5347,10 +5347,8 @@ __webpack_require__.r(__webpack_exports__);
         _this.allAuthors = data;
         //radimo override dobijenog objekta da bi imali full name
         _this.allAuthors.forEach(function (author, index) {
-          console.log(author);
           author.name = author.firstName + ' ' + author.lastName;
         });
-        console.log(_this.allAuthors);
       });
     },
     resetFilter: function resetFilter() {
@@ -5470,7 +5468,6 @@ __webpack_require__.r(__webpack_exports__);
       formDataUpdate.append('firstName', this.author.firstName);
       formDataUpdate.append('lastName', this.author.lastName);
       formDataUpdate.append('id', this.author.id);
-      console.log(formDataUpdate);
       //treba validacija da se radi i na beku i na frontu, ali na ovoj aplikaciji uradicu samo na backu
       axios.post('/librarian/edit/author', formDataUpdate, {
         headers: {
@@ -5487,7 +5484,6 @@ __webpack_require__.r(__webpack_exports__);
         });
       })["catch"](function (error) {
         if (error.response.status == 422) {
-          console.log(error.response);
           _this2.errorData = error.response.data.errors;
           _this2.success = false;
           _this2.error = false;
@@ -5557,7 +5553,6 @@ __webpack_require__.r(__webpack_exports__);
         });
       })["catch"](function (error) {
         if (error.response.status == 422) {
-          console.log(error.response);
           _this.errorData = error.response.data.errors;
           _this.success = false;
           _this.error = false;
@@ -5612,11 +5607,11 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/librarian/get/authors').then(function (_ref) {
         var data = _ref.data;
         _this.allAuthors = data;
+        console.log(_this.allAuthors);
       });
     },
     onFileSelected: function onFileSelected(event) {
       this.author.image = event.target.files[0];
-      console.log(event.target.files[0]);
     },
     addAuthor: function addAuthor() {
       var _this2 = this;
@@ -5636,7 +5631,6 @@ __webpack_require__.r(__webpack_exports__);
         _this2.error = false;
       })["catch"](function (error) {
         if (error.response.status == 422) {
-          console.log(error.response);
           _this2.errorData = error.response.data.errors;
           _this2.success = false;
           _this2.error = false;
@@ -5731,7 +5725,6 @@ __webpack_require__.r(__webpack_exports__);
         var data = _ref.data;
         _this.allBooks = data.data;
         _this.paginateCount = data.count;
-        console.log(_this.allBooks);
       })["catch"](function (error) {
         console.log('error get books');
       });
@@ -5744,10 +5737,8 @@ __webpack_require__.r(__webpack_exports__);
         _this2.allAuthors = data;
         //radimo override dobijenog objekta da bi imali full name
         _this2.allAuthors.forEach(function (author, index) {
-          console.log(author);
           author.name = author.firstName + ' ' + author.lastName;
         });
-        console.log(_this2.allAuthors);
       });
     },
     showBookModal: function showBookModal(data) {
@@ -5782,7 +5773,6 @@ __webpack_require__.r(__webpack_exports__);
         };
       })["catch"](function (error) {
         if (error.response.status == 422) {
-          console.log(error.response);
           _this3.errorData = error.response.data.errors;
           _this3.success = false;
           _this3.error = false;
@@ -5860,7 +5850,6 @@ __webpack_require__.r(__webpack_exports__);
         });
       })["catch"](function (error) {
         if (error.response.status == 422) {
-          console.log(error.response);
           _this.errorData = error.response.data.errors;
           _this.success = false;
           _this.error = false;
@@ -5889,10 +5878,8 @@ __webpack_require__.r(__webpack_exports__);
         _this3.allAuthors = data;
         //radimo override dobijenog objekta da bi imali full name
         _this3.allAuthors.forEach(function (author, index) {
-          console.log(author);
           author.name = author.firstName + ' ' + author.lastName;
         });
-        console.log(_this3.allAuthors);
       });
     },
     beforeOpen: function beforeOpen(event) {
@@ -5902,7 +5889,6 @@ __webpack_require__.r(__webpack_exports__);
       this.success = false;
       this.errorData = {};
       this.error = false;
-      console.log(this.book);
     }
   },
   created: function created() {
@@ -5946,7 +5932,6 @@ __webpack_require__.r(__webpack_exports__);
         _this.allAuthors = data;
         //radimo override dobijenog objekta da bi imali full name
         _this.allAuthors.forEach(function (author, index) {
-          console.log(author);
           author.name = author.firstName + ' ' + author.lastName;
         });
       });
@@ -6010,7 +5995,6 @@ __webpack_require__.r(__webpack_exports__);
       this.success = false;
       this.errorData = {};
       this.error = false;
-      console.log(this.user);
     },
     deleteUser: function deleteUser() {
       var _this2 = this;
@@ -6034,7 +6018,6 @@ __webpack_require__.r(__webpack_exports__);
         });
       })["catch"](function (error) {
         if (error.response.status == 422) {
-          console.log(error.response);
           _this3.errorData = error.response.data.errors;
           _this3.success = false;
           _this3.error = false;
@@ -6091,7 +6074,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     beforeOpen: function beforeOpen(event) {
       this.user = JSON.parse(JSON.stringify(event.params.user));
-      console.log(this.user);
     }
   },
   created: function created() {
@@ -6157,7 +6139,6 @@ __webpack_require__.r(__webpack_exports__);
         };
       })["catch"](function (error) {
         if (error.response.status == 422) {
-          console.log(error.response);
           _this.errorData = error.response.data.errors;
           _this.success = false;
           _this.error = false;
@@ -6774,7 +6755,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
 /* harmony export */ });
 var render = function render() {
-  var _vm$author$image;
+  var _vm$author$image, _vm$author$books2;
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", [_c("modal", {
@@ -6872,7 +6853,25 @@ var render = function render() {
         _vm.$set(_vm.author, "lastName", $event.target.value);
       }
     }
-  })])])])])]), _vm._v(" "), _c("br"), _c("br")])], 1);
+  })])]), _vm._v(" "), _c("br"), _c("br"), _vm._v(" "), _c("table", {
+    staticClass: "table table-text-size"
+  }, [_c("thead", {
+    staticClass: "bg-dark text-light"
+  }, [_c("tr", [_c("th", {
+    staticClass: "text-center",
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("BOOKS TITLE")])])]), _vm._v(" "), _c("tbody", [_vm._l(_vm.author.books, function (books, key) {
+    var _vm$author$books;
+    return ((_vm$author$books = _vm.author.books) === null || _vm$author$books === void 0 ? void 0 : _vm$author$books.length) > 0 ? _c("tr", {
+      key: key
+    }, [_c("td", {
+      staticClass: "text-center"
+    }, [_vm._v(_vm._s(books.title))])]) : _vm._e();
+  }), _vm._v(" "), ((_vm$author$books2 = _vm.author.books) === null || _vm$author$books2 === void 0 ? void 0 : _vm$author$books2.length) < 1 ? _c("tr", [_c("td", {
+    staticClass: "text-center bg-light"
+  }, [_vm._v("NO RESULT")])]) : _vm._e()], 2)])])])]), _vm._v(" "), _c("br"), _c("br")])], 1);
 };
 var staticRenderFns = [];
 render._withStripped = true;

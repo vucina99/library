@@ -128,7 +128,6 @@ export default {
             this.success = false
             this.errorData = {}
             this.error = false
-            console.log(this.user);
         },
         deleteUser() {
             axios.delete('/librarian/delete/user/' + this.user.id).then(({data}) => {
@@ -145,7 +144,6 @@ export default {
                 this.$root.$emit('editedUser', {'data': data, 'index': this.userIndex});
             }).catch((error) => {
                 if (error.response.status == 422) {
-                    console.log(error.response);
                     this.errorData = error.response.data.errors
                     this.success = false
                     this.error = false

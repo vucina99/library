@@ -78,7 +78,6 @@ export default {
                 this.allAuthors = data
                 //radimo override dobijenog objekta da bi imali full name
                 this.allAuthors.forEach((author, index) => {
-                    console.log(author);
                     author.name = author.firstName + ' ' + author.lastName
                 })
 

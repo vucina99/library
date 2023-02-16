@@ -189,7 +189,6 @@ export default {
             }).then(({data}) => {
                 this.allBooks = data.data
                 this.paginateCount = data.count
-                console.log(this.allBooks);
             }).catch((error) => {
                 console.log('error get books')
             })
@@ -200,11 +199,9 @@ export default {
                 this.allAuthors = data
                 //radimo override dobijenog objekta da bi imali full name
                 this.allAuthors.forEach((author, index) => {
-                    console.log(author);
                     author.name = author.firstName + ' ' + author.lastName
                 })
 
-                console.log(this.allAuthors)
             })
         },
         showBookModal(data) {
@@ -234,7 +231,6 @@ export default {
                 }
             }).catch((error) => {
                 if (error.response.status == 422) {
-                    console.log(error.response);
                     this.errorData = error.response.data.errors
                     this.success = false
                     this.error = false

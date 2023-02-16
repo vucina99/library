@@ -18,7 +18,8 @@ class AuthorResource extends JsonResource
             'id' => $this->id,
             'firstName' => $this->first_name,
             'lastName' => $this->last_name,
-            'image' => $this->authorImage
+            'image' => $this->authorImage,
+            'books' => $this->books
         ];
     }
 }

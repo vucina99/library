@@ -30,6 +30,27 @@
 
 
                         </form>
+                        <br><br>
+
+
+                        <table class="table table-text-size">
+                            <thead class="bg-dark text-light">
+                            <tr>
+                                <th scope="col" class="text-center">BOOKS TITLE</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-if="author.books?.length > 0" v-for="(books , key) in author.books" :key="key">
+
+                                <td class="text-center" >{{ books.title }}</td>
+                            </tr>
+                            <tr v-if="author.books?.length < 1">
+                                <td class="text-center bg-light">NO RESULT</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -85,7 +106,6 @@ export default {
                 this.$root.$emit('editedUser', {'data': data, 'index': this.userIndex});
             }).catch((error) => {
                 if (error.response.status == 422) {
-                    console.log(error.response);
                     this.errorData = error.response.data.errors
                     this.success = false
                     this.error = false
