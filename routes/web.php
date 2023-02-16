@@ -28,3 +28,7 @@ Route::get('/', [GuestController::class, 'index']);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::post('/logout-form', [HomeController::class, 'logoutForm'])->name('logout-form');
 
+
+
+Route::post('/get/book', [HomeController::class, 'getBook']);
+

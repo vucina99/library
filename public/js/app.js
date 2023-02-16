@@ -5646,7 +5646,13 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      allAuthor: [],
+      allBooks: [],
+      allAuthors: [],
+      errorData: {},
+      success: false,
+      error: false,
+      page: 0,
+      paginateCount: 0,
       book: {
         'title': '',
         'description': '',
@@ -5656,7 +5662,71 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    addBook: function addBook() {}
+    getBooks: function getBooks() {
+      var _this = this;
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      this.page = page;
+      axios.post('/get/book', {
+        'page': this.page
+      }).then(function (_ref) {
+        var data = _ref.data;
+        _this.allBooks = data.data;
+        _this.paginateCount = data.count;
+        console.log(_this.allBooks);
+      })["catch"](function (error) {
+        console.log('error get books');
+      });
+    },
+    getAuthors: function getAuthors() {
+      var _this2 = this;
+      axios.get('/librarian/get/authors').then(function (_ref2) {
+        var data = _ref2.data;
+        var authorsWithFullName = [];
+        _this2.allAuthors = data;
+        //radimo override dobijenog objekta da bi imali full name
+        _this2.allAuthors.forEach(function (author, index) {
+          console.log(author);
+          author.name = author.firstName + ' ' + author.lastName;
+        });
+        console.log(_this2.allAuthors);
+      });
+    },
+    addBook: function addBook() {
+      var _this3 = this;
+      console.log(this.book);
+      if (typeof this.book.author['id'] == 'undefined') {
+        this.book.author = '';
+      }
+
+      //treba validacija da se radi i na beku i na frontu, ali na ovoj aplikaciji uradicu samo na backu
+      axios.post('/librarian/create/book', this.book).then(function (_ref3) {
+        var data = _ref3.data;
+        _this3.success = true;
+        _this3.errorData = {};
+        _this3.error = false;
+        _this3.allBooks.push(data);
+        _this3.book = {
+          'title': '',
+          'description': '',
+          'bookNumber': '',
+          'author': ''
+        };
+      })["catch"](function (error) {
+        if (error.response.status == 422) {
+          console.log(error.response);
+          _this3.errorData = error.response.data.errors;
+          _this3.success = false;
+          _this3.error = false;
+        } else {
+          _this3.error = true;
+          _this3.success = false;
+        }
+      });
+    }
+  },
+  created: function created() {
+    this.getAuthors();
+    this.getBooks();
   }
 });
 
@@ -6770,7 +6840,57 @@ var render = function render() {
     staticClass: "row"
   }, [_c("div", {
     staticClass: "col-lg-4 col-md-12"
-  }, [_c("form", {
+  }, [Object.keys(this.errorData).length > 0 ? _c("div", {
+    staticClass: "alert error-danger alert-danger alert-dismissible fade show",
+    attrs: {
+      role: "alert"
+    }
+  }, _vm._l(_vm.errorData, function (error, index) {
+    return _c("div", {
+      key: index
+    }, _vm._l(error, function (errorChildern, key) {
+      return _c("span", {
+        key: key
+      }, [_c("i", {
+        staticClass: "fa fa-exclamation-triangle",
+        attrs: {
+          "aria-hidden": "true"
+        }
+      }), _vm._v("    " + _vm._s(errorChildern) + "\n                                             ")]);
+    }), 0);
+  }), 0) : _vm._e(), _vm._v(" "), _vm.success ? _c("div", {
+    staticClass: "alert error-danger alert-success alert-dismissible fade show",
+    attrs: {
+      role: "alert"
+    }
+  }, [_vm._m(0), _vm._v(" "), _c("button", {
+    staticClass: "close",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        _vm.success = false;
+      }
+    }
+  }, [_c("span", [_vm._v("×")])])]) : _vm._e(), _vm._v(" "), _vm.error ? _c("div", {
+    staticClass: "alert error-danger alert-danger alert-dismissible fade show",
+    attrs: {
+      role: "alert"
+    }
+  }, [_vm._m(1), _vm._v(" "), _c("button", {
+    staticClass: "close",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        _vm.error = false;
+      }
+    }
+  }, [_c("span", [_vm._v("×")])])]) : _vm._e(), _vm._v(" "), _c("form", {
     attrs: {
       action: "",
       enctype: "multipart/form-data"
@@ -6867,7 +6987,7 @@ var render = function render() {
     staticClass: "form-group search-font-size"
   }, [_c("label", [_vm._v("AUTHOR")]), _vm._v(" "), _c("v-select", {
     attrs: {
-      options: _vm.allAuthor,
+      options: _vm.allAuthors,
       id: "author",
       label: "name",
       placeholder: "AUTHOR"
@@ -6888,7 +7008,7 @@ var render = function render() {
     on: {
       click: function click($event) {
         $event.preventDefault();
-        return _vm.addAuthor();
+        return _vm.addBook();
       }
     }
   }, [_vm._v("\n                                ADD BOOK "), _c("i", {
@@ -6898,18 +7018,85 @@ var render = function render() {
     }
   })])])])])]), _vm._v(" "), _c("div", {
     staticClass: "col-lg-1 col-md-12"
-  }), _vm._v(" "), _vm._m(0)])])]);
-};
-var staticRenderFns = [function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
+  }), _vm._v(" "), _c("div", {
     staticClass: "col-lg-7 col-md-12 pt-4"
   }, [_c("div", {
     staticClass: "table-responsive"
   }, [_c("table", {
     staticClass: "table table-text-size"
-  }, [_c("thead", {
+  }, [_vm._m(2), _vm._v(" "), _c("tbody", _vm._l(_vm.allBooks, function (book, index) {
+    var _book$author;
+    return _c("tr", {
+      key: index
+    }, [_c("td", {
+      staticClass: "text-center"
+    }, [_vm._v(_vm._s(book.title))]), _vm._v(" "), _c("td", {
+      staticClass: "text-center"
+    }, [_vm._v(_vm._s(book.bookNumber))]), _vm._v(" "), _c("td", {
+      staticClass: "text-center"
+    }, [_vm._v(_vm._s((_book$author = book.author) === null || _book$author === void 0 ? void 0 : _book$author.firstName))]), _vm._v(" "), _vm._m(3, true)]);
+  }), 0)]), _vm._v(" "), _c("br"), _vm._v(" "), _vm.paginateCount > 1 ? _c("nav", {
+    attrs: {
+      "aria-label": "Page navigation example"
+    }
+  }, [_c("ul", {
+    staticClass: "pagination justify-content-center"
+  }, [_vm.page !== 0 ? _c("li", {
+    "class": [_vm.page == 0 ? "disabled" : "", "page-item"],
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        return _vm.getBooks(_vm.page - 1);
+      }
+    }
+  }, [_vm._m(4)]) : _vm._e(), _vm._v(" "), _vm._l(_vm.paginateCount, function (index) {
+    return _c("li", {
+      key: index,
+      "class": [_vm.page == index - 1 ? "active" : "", "page-item"],
+      on: {
+        click: function click($event) {
+          $event.preventDefault();
+          return _vm.getBooks(index - 1);
+        }
+      }
+    }, [_c("a", {
+      staticClass: "page-link number",
+      attrs: {
+        href: "#"
+      }
+    }, [_vm._v(_vm._s(index))])]);
+  }), _vm._v(" "), _vm.page !== _vm.paginateCount - 1 ? _c("li", {
+    "class": [_vm.page == _vm.paginateCount - 1 ? "disabled" : "", "page-item"],
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        return _vm.getBooks(_vm.page + 1);
+      }
+    }
+  }, [_vm._m(5)]) : _vm._e()], 2)]) : _vm._e()])])])])]);
+};
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("span", [_c("i", {
+    staticClass: "fa fa-check-square",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }), _vm._v("   SUCCESS ADDED")]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("span", [_c("i", {
+    staticClass: "fa fa-exclamation-triangle",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }), _vm._v("   CHECK ALL FIELDS")]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("thead", {
     staticClass: "bg-dark text-light"
   }, [_c("tr", [_c("th", {
     staticClass: "text-center",
@@ -6931,13 +7118,11 @@ var staticRenderFns = [function () {
     attrs: {
       scope: "col"
     }
-  }, [_vm._v("EDIT")])])]), _vm._v(" "), _c("tbody", [_c("tr", [_c("td", {
-    staticClass: "text-center"
-  }, [_vm._v("Mark")]), _vm._v(" "), _c("td", {
-    staticClass: "text-center"
-  }, [_vm._v("Otto")]), _vm._v(" "), _c("td", {
-    staticClass: "text-center"
-  }, [_vm._v("@mdo")]), _vm._v(" "), _c("td", {
+  }, [_vm._v("EDIT")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("td", {
     staticClass: "text-center"
   }, [_c("div", {
     staticClass: "w-100 text-center"
@@ -6946,7 +7131,36 @@ var staticRenderFns = [function () {
     attrs: {
       "aria-hidden": "true"
     }
-  })])])])])])])]);
+  })])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("a", {
+    staticClass: "page-link one",
+    attrs: {
+      href: "#",
+      tabindex: "-1"
+    }
+  }, [_c("i", {
+    staticClass: "fa fa-chevron-left",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("a", {
+    staticClass: "page-link one",
+    attrs: {
+      href: "#"
+    }
+  }, [_c("i", {
+    staticClass: "fa fa-chevron-right",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })]);
 }];
 render._withStripped = true;
 

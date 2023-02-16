@@ -20,6 +20,10 @@ class Author extends Model
         return $this->hasOne(AuthorImage::class);
     }
 
+    public function books()
+    {
+        return $this->hasMany(Book::class);
+    }
     public function createAuthor($request){
         $author = Author::create([
             'first_name' => $request->firstName,

@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAuthorRequest;
+use App\Http\Requests\CreateBookRequest;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\AuthorResource;
+use App\Http\Resources\BookResource;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\UserResource;
 use App\Models\Author;
 use App\Models\AuthorImage;
+use App\Models\Book;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -22,6 +25,7 @@ class LibrarianController extends Controller
     private $role;
     private $author;
     private $authorImage;
+    private $book;
 
     public function __construct()
     {
@@ -29,6 +33,7 @@ class LibrarianController extends Controller
         $this->role = new Role();
         $this->author = new Author();
         $this->authorImage = new AuthorImage();
+        $this->book = new Book();
     }
 
     public function books()
@@ -152,6 +157,15 @@ class LibrarianController extends Controller
         $author->delete();
 
         return response('{}' , 204);
-
     }
+
+
+
+    //book
+    public function createBook(CreateBookRequest $request){
+        $book = $this->book->createBook($request);
+        return response(new BookResource($book), 201);
+    }
+
+
 }
