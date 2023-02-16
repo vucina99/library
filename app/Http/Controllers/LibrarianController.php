@@ -88,7 +88,8 @@ class LibrarianController extends Controller
     public function deleteUser($id)
     {
         $user = User::find($id);
-        if (!$user) {
+        //ako ne postoji user prekidamo program i ne moze da obrise sam sebe
+        if (!$user || $user->id == Auth::user()->id) {
             return response('Author not found', 404);
         }
 

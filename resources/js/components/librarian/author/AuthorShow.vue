@@ -32,7 +32,6 @@
                         </form>
                         <br><br>
 
-
                         <table class="table table-text-size">
                             <thead class="bg-dark text-light">
                             <tr>
