@@ -26,7 +26,7 @@ class LibrarianController extends Controller
     // sve mogucnosti koje ima Bibliotekar stavio sam ovde
 
 
-    //  private User $user; Zeza me verzija php pa ne mogu da stavim koj ie tip :)
+    //  private User $user; Zeza me verzija php pa ne mogu da stavim koj ie tip promenljive :)
     private $user;
     private $role;
     private $author;
@@ -42,19 +42,12 @@ class LibrarianController extends Controller
         $this->book = new Book();
     }
 
-    public function books()
-    {
-        return view('librarian.books');
-    }
+
+    //User sekcija
 
     public function users()
     {
         return view('librarian.users');
-    }
-
-    public function authors()
-    {
-        return view('librarian.authors');
     }
 
     public function getUsers()
@@ -95,6 +88,15 @@ class LibrarianController extends Controller
 
         $user->delete();
         return response('{}', 204);
+    }
+    //kraj User sekcije
+
+
+    //Autor sekcija
+
+    public function authors()
+    {
+        return view('librarian.authors');
     }
 
     public function createAuthor(CreateAuthorRequest $request)
@@ -169,9 +171,16 @@ class LibrarianController extends Controller
 
         return response('{}', 204);
     }
+    //kraj Author sekcije
 
 
-    //book
+    //Book sekcija
+
+    public function books()
+    {
+        return view('librarian.books');
+    }
+
     public function createBook(CreateBookRequest $request)
     {
         $book = $this->book->createBook($request);
@@ -200,5 +209,7 @@ class LibrarianController extends Controller
         return response(new BookResource($book), 200);
 
     }
+
+    //kraj Book sekcije
 
 }
