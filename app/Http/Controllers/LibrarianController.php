@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateAuthorRequest;
 use App\Http\Requests\CreateBookRequest;
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateBookRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\AuthorResource;
 use App\Http\Resources\BookResource;
@@ -79,14 +80,15 @@ class LibrarianController extends Controller
         return response(new UserResource($user), 200);
     }
 
-    public function deleteUser($id){
+    public function deleteUser($id)
+    {
         $user = User::find($id);
         if (!$user) {
             return response('Author not found', 404);
         }
 
         $user->delete();
-        return response('{}' , 204);
+        return response('{}', 204);
     }
 
     public function createAuthor(CreateAuthorRequest $request)
@@ -128,7 +130,7 @@ class LibrarianController extends Controller
         //ako je prosledjena slika, radimo brisanje slike iz foldera i recorda u bazi , i dodajemo novu sliku
         if ($request->hasFile('image')) {
             $authorImage = AuthorImage::where('author_id', $request->id)->first();
-            if ($authorImage){
+            if ($authorImage) {
                 $this->authorImage->removeFile($authorImage);
             }
             $this->authorImage->uploadImage($request, $request->id);
@@ -140,7 +142,8 @@ class LibrarianController extends Controller
     }
 
 
-    public function deleteAuthor($id){
+    public function deleteAuthor($id)
+    {
         $author = Author::find($id);
 
         //proveramo da li postoji user i da li je user koji zelimo da obrisemo glavni bibliotekar u app, , takodje ne mozemo da obrisemo sebe kao usera dok smo ulogovani.
@@ -149,23 +152,46 @@ class LibrarianController extends Controller
         }
         //brisanje fotografije iz foldera kao i brisanje recorda u bazi ako nije avatar
         $authorImage = AuthorImage::where('author_id', $author->id)->first();
-        if ($authorImage){
+        if ($authorImage) {
             $this->authorImage->removeFile($authorImage);
         }
+        //brisanje svih knjiga kad se obrise autor, radimo ovako jer u bazi nije podeseno kaskadno brisanje
+        $author->books()->delete();
 
         //brisanje autora
         $author->delete();
 
-        return response('{}' , 204);
+        return response('{}', 204);
     }
 
 
-
     //book
-    public function createBook(CreateBookRequest $request){
+    public function createBook(CreateBookRequest $request)
+    {
         $book = $this->book->createBook($request);
         return response(new BookResource($book), 201);
     }
 
+
+    public function deleteBook($id)
+    {
+        $book = Book::find($id);
+        if (!$book) {
+            return response('Book not found', 404);
+        }
+        $this->book->deleteBook($book);
+        return response('{}', 204);
+    }
+
+    public function editBook(UpdateBookRequest $request, $id){
+
+        $book = Book::find($id);
+        if (!$book) {
+            return response('User not found', 404);
+        }
+        $book = $this->book->editBook($request, $book);
+        return response(new BookResource($book), 200);
+
+    }
 
 }

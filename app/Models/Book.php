@@ -36,4 +36,20 @@ class Book extends Model
 
         return $author->refresh();
     }
+
+    public function deleteBook($book){
+        $book->delete();
+        return true;
+    }
+
+    public function editBook($request , $book)
+    {
+        $book->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'author_id' => $request->author['id'],
+        ]);
+
+        return $book;
+    }
 }

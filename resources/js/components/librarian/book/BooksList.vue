@@ -3,7 +3,8 @@
         <div class="container">
             <div class="row ">
                 <div class="col-lg-4 col-md-12">
-
+                    <edit-book></edit-book>
+                    <show-book></show-book>
                     <div v-if="Object.keys(this.errorData).length > 0"
                          class="alert error-danger alert-danger alert-dismissible fade show"
                          role="alert">
@@ -95,14 +96,20 @@
                             <tbody>
                             <tr v-for="(book , index) in allBooks" :key="index">
 
-                                <td class="text-center">{{ book.title }}</td>
-                                <td class="text-center">{{ book.bookNumber }}</td>
-                                <td class="text-center">{{ book.author?.firstName }}</td>
-                                <td class="text-center">
+                                <td class="text-center" @click.prevent="showBookModal(book)">{{ book.title }}</td>
+                                <td class="text-center" @click.prevent="showBookModal(book)">{{ book.bookNumber }}</td>
+                                <td class="text-center" @click.prevent="showBookModal(book)">{{
+                                        book.author?.firstName
+                                    }}
+                                </td>
+                                <td class="text-center" @click.prevent="editBookModal(book,index)">
                                     <div class="w-100 text-center"><i class="fa text-dark fa fa-pencil"
                                                                       aria-hidden="true"></i>
                                     </div>
                                 </td>
+                            </tr>
+                            <tr v-if="allBooks.length < 1">
+                                <td colspan="4" class="text-center bg-light">NO RESULT</td>
                             </tr>
 
                             </tbody>
@@ -132,7 +139,6 @@
                         </nav>
 
 
-
                     </div>
                 </div>
             </div>
@@ -142,16 +148,21 @@
 
 <script>
 import vSelect from "vue-select";
+import EditBook from "./EditBook";
+import ShowBook from "./ShowBook";
 
 export default {
     name: "BooksList",
     components: {
         'v-select': vSelect,
+        'edit-book': EditBook,
+        'show-book': ShowBook
+
     },
     data() {
 
         return {
-            allBooks : [],
+            allBooks: [],
             allAuthors: [],
             errorData: {},
             success: false,
@@ -171,7 +182,7 @@ export default {
     },
 
     methods: {
-        getBooks(page = 0){
+        getBooks(page = 0) {
             this.page = page
             axios.post('/get/book', {
                 'page': this.page,
@@ -196,9 +207,15 @@ export default {
                 console.log(this.allAuthors)
             })
         },
+        showBookModal(data) {
+            this.$modal.show('show-book-modal', {'book': data});
+        },
+
+        editBookModal(data, index) {
+            this.$modal.show('edit-book-modal', {'book': data, 'index': index});
+        },
         addBook() {
-            console.log(this.book)
-            if(typeof this.book.author['id'] == 'undefined'){
+            if (this.book.author == '' || this.book.author == null || typeof this.book.author['id'] == 'undefined') {
                 this.book.author = ''
             }
 
@@ -231,6 +248,22 @@ export default {
     created() {
         this.getAuthors()
         this.getBooks()
+
+
+        this.$root.$on("editedBook", (data) => {
+            if (typeof this.allBooks[data.index] !== "undefined") {
+                this.allBooks = this.allBooks.map((x, indexMap) => (data.index === indexMap) ? data.data : x)
+
+            }
+        })
+
+        this.$root.$on("removeBookFromArray", (index) => {
+            if (typeof this.allBooks[index] !== "undefined") {
+
+                this.allBooks.splice(index, 1);
+
+            }
+        })
     }
 }
 </script>

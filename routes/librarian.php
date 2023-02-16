@@ -25,6 +25,9 @@ Route::group(['prefix' => 'librarian' , 'middleware' => 'librarian'], function (
     //books
     Route::get('/books', [LibrarianController::class, 'books']);
     Route::post('/create/book', [LibrarianController::class, 'createBook']);
+    Route::delete('/delete/book/{id}', [LibrarianController::class, 'deleteBook']);
+    Route::patch('/edit/book/{id}', [LibrarianController::class, 'editBook']);
+
 
 });
 

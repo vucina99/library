@@ -39,7 +39,7 @@ class HomeController extends Controller
     //ovde cemo raditi paginaciju jer moze da bude puno knjiga :)
     public function getBook(Request $request){
         //number data je broj koliko prikazujemo knjiga
-        $numberData = 2;
+        $numberData = 25;
         $book = Book::query();
 
         //page je stranica na koju smo kliknuli

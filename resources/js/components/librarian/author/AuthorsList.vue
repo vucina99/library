@@ -92,8 +92,8 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td colspan="4" v-if="allAuthors.length < 1" class="text-center bg-light">NO RESULT</td>
+                            <tr v-if="allAuthors.length < 1">
+                                <td colspan="4"  class="text-center bg-light">NO RESULT</td>
                             </tr>
 
                             </tbody>

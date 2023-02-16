@@ -25,3 +25,10 @@ table tbody tr:hover {
 .img-author{
    width: 50%;
 }
+.page-link {
+    color: #41464b!important;
+}
+.page-item.active .page-link {
+    color: #ffffff !important;
+    background-color: #41464b !important;
+}
