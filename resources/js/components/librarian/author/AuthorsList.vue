@@ -3,6 +3,8 @@
         <div class="container">
             <div class="row ">
                 <div class="col-lg-4 col-md-12">
+                    <author-edit></author-edit>
+                    <author-show></author-show>
                     <div v-if="Object.keys(this.errorData).length > 0"
                          class="alert error-danger alert-danger alert-dismissible fade show"
                          role="alert">
@@ -38,14 +40,14 @@
                             <label for="firstName">FIRST NAME</label>
                             <input type="text" name="firstName" id="firstName"
                                    v-model="author.firstName"
-                                   class="form-control" placeholder="FIRST NAME">
+                                   class="form-control" placeholder="FIRST NAME" required>
                         </div>
 
                         <div class="form-group search-font-size">
                             <label for="lastName">LAST NAME</label>
                             <input type="text" name="lastName" id="lastName"
                                    v-model="author.lastName"
-                                   class="form-control" placeholder="LAST NAME">
+                                   class="form-control"  required placeholder="LAST NAME">
                         </div>
 
                         <div class="form-group search-font-size">
@@ -81,10 +83,10 @@
                             </thead>
                             <tbody>
                             <tr v-if="allAuthors.length > 0" v-for="(author , index) in allAuthors" :key="index" >
-                                <td class="text-center"><img :src="'/img/authors/'+author.image?.name"  class="img-author" alt=""></td>
-                                <td class="text-center">{{ author.firstName }}</td>
-                                <td class="text-center">{{ author.lastName }}</td>
-                                <td class="text-center">
+                                <td class="text-center" @click.prevent="showAuthor(author)"><img :src="'/img/authors/'+author.image?.name"  class="img-author" alt=""></td>
+                                <td class="text-center" @click.prevent="showAuthor(author)">{{ author.firstName }}</td>
+                                <td class="text-center" @click.prevent="showAuthor(author)">{{ author.lastName }}</td>
+                                <td class="text-center" @click.prevent="editAuthor(author,index)">
                                     <div class="w-100 text-center"><i class="fa text-dark fa fa-pencil"
                                                                       aria-hidden="true"></i>
                                     </div>
@@ -105,8 +107,15 @@
 </template>
 
 <script>
+import AuthorEdit from "./AuthorEdit";
+import AuthorShow from "./AuthorShow";
+
 export default {
     name: "AuthorsList",
+    components: {
+        'author-edit': AuthorEdit,
+        'author-show': AuthorShow,
+    },
     data() {
         return {
             errorData: {},
@@ -160,10 +169,36 @@ export default {
                     }
                 });
 
-        }
+        },
+
+        showAuthor(data) {
+            this.$modal.show('show-author-modal', {'author': data});
+        },
+
+        editAuthor(data, index) {
+            this.$modal.show('edit-author-modal', {'author': data, 'index': index});
+        },
     },
     created() {
         this.getAuthors();
+
+        this.$root.$on("editedAuthor", (data) => {
+            if (typeof this.allAuthors[data.index] !== "undefined") {
+                this.allAuthors = this.allAuthors.map((x, indexMap) => (data.index === indexMap) ? data.data : x)
+
+            }
+        })
+
+        this.$root.$on("removeAuthorFromArray", (index) => {
+            if (typeof this.allAuthors[index] !== "undefined") {
+
+                this.allAuthors.splice(index, 1);
+
+            }
+        })
+
+
+
     }
 }
 </script>

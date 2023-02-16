@@ -4,12 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class AuthorImage extends Model
 {
-    use HasFactory;
-    protected $softDelete = true;
+    use HasFactory , SoftDeletes;
+
+
+
     protected $fillable = [
         'name',
         'author_id',
@@ -20,12 +24,14 @@ class AuthorImage extends Model
     {
         return $this->belongsTo(Author::class);
     }
-    public function uploadImage($request , $author_id){
-        //store image in public folder
+
+    public function uploadImage($request, $author_id)
+    {
+        //pravim jedinstveno ime slike, i sliku prosledjujemo u foolder img/authors
         $imageName = time() . rand(1, 10000) . '.' . $request->file('image')->extension();
         $request->file('image')->move(public_path() . '/img/authors', $imageName);
 
-        //save in database with foregin key author_id
+        //cuvamo u record u bazi sa autorom_id kome pripada slika
         $authorImage = AuthorImage::create([
             'name' => $imageName,
             'author_id' => $author_id,
@@ -33,5 +39,23 @@ class AuthorImage extends Model
         ]);
 
         return $authorImage->refresh();
+    }
+
+
+    public function removeFile($authorImage)
+    {
+        if ($authorImage->name !== 'avatar.jpeg') {
+            // Define the path to the file you want to delete
+            $path = public_path('img/authors/' . $authorImage->name);
+
+            // Check if the file exists
+            if (File::exists($path)) {
+                // Delete the file
+                File::delete($path);
+            }
+        }
+
+        $authorImage->delete();
+        return true;
     }
 }

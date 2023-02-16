@@ -1,13 +1,13 @@
 <template>
     <div>
 
-        <modal name="edit-user-modal" @before-open="beforeOpen" :shiftY="0.1" :scrollable="true" :adaptive="true"
+        <modal name="edit-author-modal" @before-open="beforeOpen" :shiftY="0.1" :scrollable="true" :adaptive="true"
                :resizable="true" height="auto">
 
             <div class="container">
                 <div class="row ">
                     <div class="col-lg-12 pt-5 pb-5">
-                        <h4 class="text-center text-dark">EDIT USER </h4> <br><br>
+                        <h4 class="text-center text-dark">EDIT AUTHOR </h4> <br><br>
                         <div v-if="Object.keys(this.errorData).length > 0"
                              class="alert error-danger alert-danger alert-dismissible fade show"
                              role="alert">
@@ -40,40 +40,38 @@
                         </div>
 
 
-                        <form action="">
+                        <form action="" enctype="multipart/form-data">
                             <div class="form-group search-font-size">
                                 <label for="firstName">FIRST NAME</label>
                                 <input type="text" name="firstName" id="firstName"
-                                       v-model="user.firstName"
-                                       class="form-control" placeholder="FIRST NAME">
+                                       v-model="author.firstName"
+                                       class="form-control" placeholder="FIRST NAME" required>
                             </div>
 
                             <div class="form-group search-font-size">
                                 <label for="lastName">LAST NAME</label>
                                 <input type="text" name="lastName" id="lastName"
-                                       v-model="user.lastName"
-                                       class="form-control" placeholder="LAST NAME">
+                                       v-model="author.lastName"
+                                       class="form-control" required placeholder="LAST NAME">
                             </div>
-
 
                             <div class="form-group search-font-size">
-                                <label for="role">ROLE</label>
-                                <select name="role" id="role" v-model="user.role" class="form-control">
-                                    <option value="">SELECT ROLE</option>
-                                    <option v-for="(role, key) in allRoles" :key="key" :value="role.id">{{ role.name }}
-                                    </option>
-                                </select>
+                                <label for="file">IMAGE</label>
+                                <input type="file" name="file" id="file"
+                                       class="form-control" placeholder="IMAGE" @change="onFileSelected"
+                                       accept=".jpg, .jpeg, .png">
                             </div>
+
                             <div class="pt-3">
                                 <div class="w-100 ">
-                                    <button class="btn btn-dark w-100 mr-1" @click.prevent="editUser()">
-                                        EDIT USER <i class="fa fa fa-pencil"
-                                                     aria-hidden="true"></i>
+                                    <button class="btn btn-dark w-100 mr-1" @click.prevent="editAutor()">
+                                        EDIT AUTHOR <i class="fa fa fa-pencil"
+                                                       aria-hidden="true"></i>
                                     </button>
                                     <br><br>
-                                    <button class="btn btn-danger w-100 mr-1" @click.prevent="deleteUser()">
-                                        DELETE USER <i class="fa fa fa-trash"
-                                                         aria-hidden="true"></i>
+                                    <button class="btn btn-danger w-100 mr-1" @click.prevent="deleteAutor()">
+                                        DELETE AUTHOR <i class="fa fa fa-trash"
+                                                       aria-hidden="true"></i>
                                     </button>
 
                                 </div>
@@ -93,56 +91,63 @@
 
 <script>
 export default {
-    name: "EditUser",
+    name: "AuthorEdit",
     data() {
         return {
 
-            user: {
+            author: {
                 'firstName': '',
                 'lastName': '',
-                'email': '',
-                'password': '',
-                'role': ''
+                'image': ''
             },
             errorData: {},
             success: false,
             error: false,
             allRoles: [],
-            userIndex: '',
+            authorIndex: '',
 
         }
     },
     methods: {
-        getRoles() {
-            axios.get('/librarian/get/roles').then(({data}) => {
-                this.allRoles = data
-            })
+        onFileSelected(event) {
+            this.author.image = event.target.files[0];
+
         },
         closeModal() {
-            this.$modal.hide('edit-user-modal');
+            this.$modal.hide('edit-author-modal');
         },
         beforeOpen(event) {
-            this.user = JSON.parse(JSON.stringify( event.params.user));
-            this.user.role = this.user.role.id;
-            this.userIndex = event.params.index;
+            this.author = JSON.parse(JSON.stringify(event.params.author));
+            this.author.image = '';
+            this.authorIndex = event.params.index;
             this.success = false
             this.errorData = {}
             this.error = false
-            console.log(this.user);
+
         },
-        deleteUser(){
-            axios.delete('/librarian/delete/user/' + this.user.id).then(({data}) => {
-                this.$root.$emit('removeUserFromArray', this.userIndex);
+        deleteAutor(){
+            axios.delete('/librarian/delete/author/' + this.author.id).then(({data}) => {
+                this.$root.$emit('removeAuthorFromArray', this.authorIndex);
                 this.closeModal();
             })
         },
-        editUser(){
+        editAutor(){
+            const formDataUpdate = new FormData();
+            formDataUpdate.append('image', this.author.image);
+            formDataUpdate.append('firstName', this.author.firstName);
+            formDataUpdate.append('lastName', this.author.lastName);
+            formDataUpdate.append('id', this.author.id);
+            console.log(formDataUpdate);
             //treba validacija da se radi i na beku i na frontu, ali na ovoj aplikaciji uradicu samo na backu
-            axios.patch('/librarian/edit/user/'+this.user.id, this.user).then(({data}) => {
+            axios.post('/librarian/edit/author', formDataUpdate, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(({data}) => {
                 this.success = true
                 this.errorData = {}
                 this.error = false
-                this.$root.$emit('editedUser', {'data': data, 'index': this.userIndex});
+                this.$root.$emit('editedAuthor', {'data': data, 'index': this.authorIndex});
             }).catch((error) => {
                 if (error.response.status == 422) {
                     console.log(error.response);
@@ -157,9 +162,6 @@ export default {
         }
     },
 
-    created() {
-        this.getRoles();
-    }
 }
 
 

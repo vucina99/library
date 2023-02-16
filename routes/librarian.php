@@ -12,11 +12,14 @@ Route::group(['prefix' => 'librarian' , 'middleware' => 'librarian'], function (
     Route::post('/create/user', [LibrarianController::class, 'createUser']);
     Route::get('/get/roles', [LibrarianController::class, 'getRoles']);
     Route::patch('/edit/user/{id}', [LibrarianController::class, 'editUser']);
+    Route::delete('/delete/user/{id}', [LibrarianController::class, 'deleteUser']);
 
     //authors
     Route::get('/authors', [LibrarianController::class, 'authors']);
     Route::get('/get/authors', [LibrarianController::class, 'getAuthors']);
     Route::post('/create/author', [LibrarianController::class, 'createAuthor']);
+    Route::post('/edit/author', [LibrarianController::class, 'editAuthor']);
+    Route::delete('/delete/author/{id}', [LibrarianController::class, 'deleteAuthor']);
 
 
     //books

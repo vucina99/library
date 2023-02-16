@@ -41,33 +41,33 @@
                     <form action="">
                         <div class="form-group search-font-size">
                             <label for="firstName">FIRST NAME</label>
-                            <input type="text" name="firstName" id="firstName"
+                            <input type="text" name="firstName"  required id="firstName"
                                    v-model="user.firstName"
                                    class="form-control" placeholder="FIRST NAME">
                         </div>
 
                         <div class="form-group search-font-size">
                             <label for="lastName">LAST NAME</label>
-                            <input type="text" name="lastName" id="lastName"
+                            <input type="text" name="lastName"  required id="lastName"
                                    v-model="user.lastName"
                                    class="form-control" placeholder="LAST NAME">
                         </div>
 
                         <div class="form-group search-font-size">
                             <label for="email">E-mail</label>
-                            <input type="email" name="email" id="email"
+                            <input type="email" name="email"  required id="email"
                                    v-model="user.email"
                                    class="form-control" placeholder="E-mail">
                         </div>
                         <div class="form-group search-font-size">
                             <label for="password">Password</label>
-                            <input type="password" name="password" id="password"
+                            <input type="password" name="password"  required id="password"
                                    v-model="user.password"
                                    class="form-control" placeholder="Password">
                         </div>
                         <div class="form-group search-font-size">
                             <label for="role">ROLE</label>
-                            <select name="role" id="role" v-model="user.role" class="form-control">
+                            <select name="role" id="role"  required v-model="user.role" class="form-control">
                                 <option value="">SELECT ROLE</option>
                                 <option v-for="(role, key) in allRoles" :key="key" :value="role.id">{{ role.name }}
                                 </option>
@@ -197,7 +197,7 @@ export default {
         },
 
         editUserModal(data, index) {
-            this.$modal.show('edit-user-modal', {'user': data, 'caseIndex': index});
+            this.$modal.show('edit-user-modal', {'user': data, 'index': index});
         },
     },
 
@@ -208,6 +208,14 @@ export default {
         this.$root.$on("editedUser", (data) => {
             if (typeof this.allUsers[data.index] !== "undefined") {
                 this.allUsers = this.allUsers.map((x, indexMap) => (data.index === indexMap) ? data.data : x)
+
+            }
+        })
+
+        this.$root.$on("removeUserFromArray", (index) => {
+            if (typeof this.allUsers[index] !== "undefined") {
+
+                this.allUsers.splice(index, 1);
 
             }
         })
