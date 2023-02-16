@@ -5315,27 +5315,78 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-select */ "./node_modules/vue-select/dist/vue-select.js");
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _librarian_book_ShowBook__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./librarian/book/ShowBook */ "./resources/js/components/librarian/book/ShowBook.vue");
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Books",
   components: {
-    'v-select': (vue_select__WEBPACK_IMPORTED_MODULE_0___default())
+    'v-select': (vue_select__WEBPACK_IMPORTED_MODULE_0___default()),
+    'show-book': _librarian_book_ShowBook__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   data: function data() {
     return {
       search: {
-        'book_number': '',
-        'book_name': '',
+        'bookNumber': '',
+        'title': '',
         'author': ''
       },
-      allAuthors: []
+      allAuthors: [],
+      page: 0,
+      paginateCount: 0,
+      allBooks: []
     };
   },
   methods: {
-    resetFilter: function resetFilter() {},
+    getAuthors: function getAuthors() {
+      var _this = this;
+      axios.get('/librarian/get/authors').then(function (_ref) {
+        var data = _ref.data;
+        var authorsWithFullName = [];
+        _this.allAuthors = data;
+        //radimo override dobijenog objekta da bi imali full name
+        _this.allAuthors.forEach(function (author, index) {
+          console.log(author);
+          author.name = author.firstName + ' ' + author.lastName;
+        });
+        console.log(_this.allAuthors);
+      });
+    },
+    resetFilter: function resetFilter() {
+      this.search = {
+        'bookNumber': '',
+        'title': '',
+        'author': ''
+      };
+    },
     getBooks: function getBooks() {
+      var _this2 = this;
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      if (this.search.author == '' || this.search.author == null || typeof this.search.author['id'] == 'undefined') {
+        this.search.author = '';
+      }
+      this.page = page;
+      axios.post('/get/book', {
+        'page': this.page,
+        'search': this.search
+      }).then(function (_ref2) {
+        var data = _ref2.data;
+        console.log(data);
+        _this2.allBooks = data.data;
+        _this2.paginateCount = data.count;
+      })["catch"](function (error) {
+        console.log('error get books');
+      });
+    },
+    showBookModal: function showBookModal(data) {
+      this.$modal.show('show-book-modal', {
+        'book': data
+      });
     }
+  },
+  created: function created() {
+    this.getAuthors();
+    this.getBooks();
   }
 });
 
@@ -6182,7 +6233,7 @@ var render = function render() {
     staticClass: "row"
   }, [_c("div", {
     staticClass: "col-lg-4 col-md-12"
-  }, [_c("form", {
+  }, [_c("show-book"), _vm._v(" "), _c("form", {
     attrs: {
       action: ""
     }
@@ -6196,8 +6247,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.search.book_number,
-      expression: "search.book_number"
+      value: _vm.search.bookNumber,
+      expression: "search.bookNumber"
     }],
     staticClass: "form-control",
     attrs: {
@@ -6207,12 +6258,12 @@ var render = function render() {
       placeholder: "BOOK NUMBER"
     },
     domProps: {
-      value: _vm.search.book_number
+      value: _vm.search.bookNumber
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.$set(_vm.search, "book_number", $event.target.value);
+        _vm.$set(_vm.search, "bookNumber", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -6221,27 +6272,27 @@ var render = function render() {
     attrs: {
       "for": "book_name"
     }
-  }, [_vm._v("BOOK NAME")]), _vm._v(" "), _c("input", {
+  }, [_vm._v("TITLE")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.search.book_name,
-      expression: "search.book_name"
+      value: _vm.search.title,
+      expression: "search.title"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
       name: "number_court",
       id: "book_name",
-      placeholder: "BOOK NAME"
+      placeholder: "TITLE"
     },
     domProps: {
-      value: _vm.search.book_name
+      value: _vm.search.title
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.$set(_vm.search, "book_name", $event.target.value);
+        _vm.$set(_vm.search, "title", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -6285,32 +6336,99 @@ var render = function render() {
         return _vm.resetFilter();
       }
     }
-  }, [_vm._v("\n                            RESETUJ "), _c("i", {
+  }, [_vm._v("\n                            RESETUJ FILTER "), _c("i", {
     staticClass: "fa fa-refresh",
     attrs: {
       "aria-hidden": "true"
     }
-  })])])])])]), _vm._v(" "), _c("div", {
+  })])])])])], 1), _vm._v(" "), _c("div", {
     staticClass: "col-lg-1 col-md-12"
-  }), _vm._v(" "), _vm._m(0)])]);
-};
-var staticRenderFns = [function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
+  }), _vm._v(" "), _c("div", {
     staticClass: "col-lg-7 col-md-12 pt-4"
   }, [_c("div", {
     staticClass: "table-responsive"
   }, [_c("table", {
     staticClass: "table table-text-size"
-  }, [_c("thead", {
+  }, [_vm._m(0), _vm._v(" "), _c("tbody", [_vm._l(_vm.allBooks, function (book, index) {
+    var _book$author;
+    return _c("tr", {
+      key: index
+    }, [_c("td", {
+      staticClass: "text-center",
+      on: {
+        click: function click($event) {
+          $event.preventDefault();
+          return _vm.showBookModal(book);
+        }
+      }
+    }, [_vm._v(_vm._s(book.title))]), _vm._v(" "), _c("td", {
+      staticClass: "text-center",
+      on: {
+        click: function click($event) {
+          $event.preventDefault();
+          return _vm.showBookModal(book);
+        }
+      }
+    }, [_vm._v(_vm._s(book.bookNumber))]), _vm._v(" "), _c("td", {
+      staticClass: "text-center",
+      on: {
+        click: function click($event) {
+          $event.preventDefault();
+          return _vm.showBookModal(book);
+        }
+      }
+    }, [_vm._v(_vm._s((_book$author = book.author) === null || _book$author === void 0 ? void 0 : _book$author.firstName) + "\n                        ")])]);
+  }), _vm._v(" "), _vm.allBooks.length < 1 ? _c("tr", [_c("td", {
+    staticClass: "text-center bg-light",
+    attrs: {
+      colspan: "3"
+    }
+  }, [_vm._v("NO RESULT")])]) : _vm._e()], 2)]), _vm._v(" "), _c("br"), _vm._v(" "), _vm.paginateCount > 1 ? _c("nav", {
+    attrs: {
+      "aria-label": "Page navigation example"
+    }
+  }, [_c("ul", {
+    staticClass: "pagination justify-content-center"
+  }, [_vm.page !== 0 ? _c("li", {
+    "class": [_vm.page == 0 ? "disabled" : "", "page-item"],
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        return _vm.getBooks(_vm.page - 1);
+      }
+    }
+  }, [_vm._m(1)]) : _vm._e(), _vm._v(" "), _vm._l(_vm.paginateCount, function (index) {
+    return _c("li", {
+      key: index,
+      "class": [_vm.page == index - 1 ? "active" : "", "page-item"],
+      on: {
+        click: function click($event) {
+          $event.preventDefault();
+          return _vm.getBooks(index - 1);
+        }
+      }
+    }, [_c("a", {
+      staticClass: "page-link number",
+      attrs: {
+        href: "#"
+      }
+    }, [_vm._v(_vm._s(index))])]);
+  }), _vm._v(" "), _vm.page !== _vm.paginateCount - 1 ? _c("li", {
+    "class": [_vm.page == _vm.paginateCount - 1 ? "disabled" : "", "page-item"],
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        return _vm.getBooks(_vm.page + 1);
+      }
+    }
+  }, [_vm._m(2)]) : _vm._e()], 2)]) : _vm._e()])])])]);
+};
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("thead", {
     staticClass: "bg-dark text-light"
   }, [_c("tr", [_c("th", {
-    staticClass: "text-center",
-    attrs: {
-      scope: "col"
-    }
-  }, [_vm._v("BOOK NUMBER")]), _vm._v(" "), _c("th", {
     staticClass: "text-center",
     attrs: {
       scope: "col"
@@ -6320,13 +6438,41 @@ var staticRenderFns = [function () {
     attrs: {
       scope: "col"
     }
-  }, [_vm._v("AUTHOR")])])]), _vm._v(" "), _c("tbody", [_c("tr", [_c("td", {
-    staticClass: "text-center"
-  }, [_vm._v("Mark")]), _vm._v(" "), _c("td", {
-    staticClass: "text-center"
-  }, [_vm._v("Otto")]), _vm._v(" "), _c("td", {
-    staticClass: "text-center"
-  }, [_vm._v("@mdo")])])])])])]);
+  }, [_vm._v("BOOK NUMBER")]), _vm._v(" "), _c("th", {
+    staticClass: "text-center",
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("AUTHOR")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("a", {
+    staticClass: "page-link one",
+    attrs: {
+      href: "#",
+      tabindex: "-1"
+    }
+  }, [_c("i", {
+    staticClass: "fa fa-chevron-left",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("a", {
+    staticClass: "page-link one",
+    attrs: {
+      href: "#"
+    }
+  }, [_c("i", {
+    staticClass: "fa fa-chevron-right",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })]);
 }];
 render._withStripped = true;
 

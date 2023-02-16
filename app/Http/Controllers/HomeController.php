@@ -55,10 +55,10 @@ class HomeController extends Controller
             $book = $book->where('author_id', $search->author['id']);
         }
         if (isset($request->search) && $search->title !== '' && $search->title !== null) {
-            $book = $book->where('title', $search->title);
+            $book = $book->where('title','LIKE' , '%'.$search->title.'%');
         }
         if (isset($request->search) && $search->bookNumber !== '' && $search->bookNumber !== null) {
-            $book = $book->where('book_number', $search->bookNumber);
+            $book = $book->where('book_number', 'LIKE' , '%'.$search->bookNumber.'%');
         }
 
         //da bi dobili tacan broj koliko treba da prikazemo brojeva u paginaciji, ali uzimamo gornju vrednost
