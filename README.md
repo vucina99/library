@@ -14,7 +14,7 @@
 6. Izvršite sledeću komandu da izvršite migracije baze podataka:
    - php artisan migrate
 
-7. Pokrenite seeder-e
+7. Pokrenite seeder-e (postoje seederi za role i za prvog korisnika koji je bibliotekar. Parametre za login tog korisnika mozete videti u app/databse/seeders/UserSeeder.php
     - php artisan db:seed
    
 8. Pokrenite server
